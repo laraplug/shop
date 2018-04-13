@@ -7,48 +7,49 @@
 
 # Laraplug Shop
 
-**Laraplug Shop** is a flexible, extendable e-commerce module, built on top of [AsgardCMS](https://github.com/AsgardCms/Platform) platform.
+**Laraplug Shop** 은 유연하고, 커스터마이징이 쉬운 쇼핑몰입니다. [AsgardCMS](https://github.com/AsgardCms/Platform) 플랫폼을 기반으로 제작되었습니다.
 
-Integrated with [laraplug/product-module](https://github.com/laraplug/product-module)
-and [laraplug/attribute-module](https://github.com/laraplug/attribute-module)
+아래 모듈들이 함께 설치됩니다  
+[laraplug/product-module](https://github.com/laraplug/product-module)  
+[laraplug/attribute-module](https://github.com/laraplug/attribute-module)
 
 ## Table Of Contents
 
-- [Installation](#installation)
-- [Usage](#usage)
-    - [Extend Product Model](#extend-product-model)
-    - [Add EAV to Produt model](#add-eav-to-product-model)
-    - [Register Your Product](#register-your-product)
-- [About Laraplug](#about-laraplug)
-- [Contributing](#contributing)
+- [설치](#설치)
+- [사용법](#사용법)
+    - [상품모델 생성](#상품모델-생성)
+    - [상품모델 속성추가](#상품모델-속성추가)
+    - [상품모델 등록](#상품모델-등록)
+- [Laraplug 소개](#laraplug-소개)
+- [기여하기](#기여하기)
 
 
-## Installation
+## 설치
 
-1. Install the package via composer:
+1. 컴포저를 이용하여 패키지를 설치합니다:
     ```shell
     composer require laraplug/shop
     ```
 
-2. Execute migrations via [AsgardCMS](https://github.com/AsgardCms/Platform)'s module command:
+2. [AsgardCMS](https://github.com/AsgardCms/Platform)의 모듈 마이그레이션 커맨드를 이용하여 DB를 생성합니다:
     ```shell
     php artisan module:migrate Attribute
     php artisan module:migrate Product
     php artisan module:migrate Shop
     ```
 
-3. Execute publish via [AsgardCMS](https://github.com/AsgardCms/Platform)'s module command:
+3. [AsgardCMS](https://github.com/AsgardCms/Platform)의 모듈 퍼블리싱 커맨드를 이용하여 Assets(js,css,font...etc)를 생성합니다:
     ```shell
     php artisan module:publish Attribute
     php artisan module:publish Product
     php artisan module:publish Shop
     ```
 
-4. Done!
+4. 끝!
 
-## Usage
+## 사용법
 
-### Extend Product Model
+### 상품모델 생성
 
 To create your own `Book` Product Eloquent model on `BookStore` module, just extend the `\Modules\Product\Entities\Product` model like this:
 
@@ -69,7 +70,7 @@ class Book extends Product
 }
 ```
 
-### Add EAV to Product model
+### 상품모델 속성추가
 
 Add `$systemAttributes` to utilize [laraplug/attribute-module](https://github.com/laraplug/attribute-module) on code-level like this:
 
@@ -97,7 +98,7 @@ class Book extends Product
 }
 ```
 
-### Register Your Product
+### 상품모델 등록
 
 You can register your Entity using `ProductManager` like this:
 
@@ -121,11 +122,11 @@ class BookStoreServiceProvider extends ServiceProvider
 }
 ```
 
-### About Laraplug
+### Laraplug 소개
 
 LaraPlug is a opensource project to build e-commerce solution on top of AsgardCMS.
 
 
-## Contributing
+## 기여하기
 
 We welcome any pull-requests or issues :)
