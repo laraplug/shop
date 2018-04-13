@@ -98,6 +98,20 @@ class Book extends Product
 }
 ```
 
+#### 사용가능한 SystemAttributes 파라미터
+
+**type** : String of input type (list below)
+ - `input` : input[type=text]
+ - `textarea` : teaxarea
+ - `radio` : input[type=radio]
+ - `checkbox` : input[type=checkbox]
+ - `select` : select
+ - `multiselect` : select[multiple]
+
+**options** : Array of option keys
+
+**has_translatable_values** : boolean
+
 ### 상품모델 등록
 
 You can register your Entity using `ProductManager` like this:
