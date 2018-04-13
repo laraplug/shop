@@ -1,0 +1,23 @@
+{
+    "name": "Shop",
+    "alias": "shop",
+    "description": "",
+    "keywords": [],
+    "version": "0.1.0",
+    "active": 1,
+    "order": 11,
+    "providers": [
+        "Modules\\Shop\\Providers\\ShopServiceProvider",
+        "Modules\\Shop\\Providers\\RouteServiceProvider"
+    ],
+    "aliases": {
+        "Shop": "Modules\\Shop\\Facades\\Shop",
+        "Product": "Modules\\Shop\\Facades\\Product",
+        "Category": "Modules\\Shop\\Facades\\Category",
+        "Currency": "Modules\\Shop\\Facades\\Currency"
+    },
+    "files": [
+
+    ],
+    "requires": []
+}

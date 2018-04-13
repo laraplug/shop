@@ -1,0 +1,9 @@
+url: https://github.com/laraplug/shop
+versions:
+    "0.2.0":
+        added:
+            - Integration with Product & Attribute module
+            - Theme Support
+    "0.1.0":
+        added:
+            - Initial Release

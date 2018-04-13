@@ -1,2 +1,2 @@
-# shop
-AsgardCMS Ecommerce Module
+# Shop
+Laravel Ecommerce Module (Based on AsgardCMS)
