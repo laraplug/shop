@@ -76,13 +76,6 @@ interface ShopCartInterface
     public function count();
 
     /**
-     * Get Calculated Price
-     * @param  ShopItemInterface $item
-     * @return int
-     */
-    public function calculateUnitPrice(ShopItemInterface $item);
-
-    /**
      * Returns total price of all the items in cart.
      *
      * @return float

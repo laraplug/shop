@@ -3,6 +3,7 @@
 namespace Modules\Shop\Support;
 
 use Modules\Shop\Entities\Shop;
+use Modules\Shop\Contracts\ShopItemInterface;
 use Modules\Shop\Contracts\ShopOrderInterface;
 use Modules\Shop\Repositories\ShopRepository;
 use Modules\Shop\Repositories\CurrencyRepository;
@@ -10,6 +11,8 @@ use Modules\Shop\Repositories\PaymentGatewayManager;
 use Modules\Order\Entities\OrderStatus;
 
 use Modules\Order\Repositories\OrderRepository;
+
+use Modules\Product\Contracts\OptionInterface;
 
 use Jenssegers\Agent\Facades\Agent;
 use Illuminate\Support\Facades\Auth;
@@ -201,27 +204,32 @@ class ShopHelper
     /**
      * 상품 단가 계산
      * Calculate Single Item Price
-     * @param  array $item
+     * @param  ShopItemInterface $item
      * @return int
      */
-    public function calculateUnitPrice($item)
-    {
-        if(!isset($item['product'])) return 0;
-        $salePrice = (int) $item['product']['sale_price'];
-        $unitPrice = $salePrice;
-        if (!empty($item['options'])) {
-            foreach ($item['options'] as $option) {
-                $priceValue = (int) $option['price_value'];
-                if ($option['price_type'] == 'FIXED') {
-                    $unitPrice += $priceValue;
-                } elseif ($option['price_type'] == 'PERCENTAGE') {
-                    $unitPrice += $salePrice * ($priceValue / 100);
-                    $unitPrice = round($unitPrice);
-                }
-            }
-        }
-        return $unitPrice;
-    }
+     public function calculateUnitPrice(ShopItemInterface $item)
+     {
+         $salePrice = (int) $item['product']['sale_price'];
+         $unitPrice = $salePrice;
+         if (!empty($item['options'])) {
+             foreach ($item['options'] as $option) {
+                 if(!$option->is_collection) continue;
+
+                 if($value = $option->values->firstWhere('code', $option->value)) {
+                     $priceValue = (int) $value['price_value'];
+                     if ($value['price_type'] == 'FIXED') {
+                         $unitPrice += $priceValue;
+                     } elseif ($value['price_type'] == 'PERCENTAGE') {
+                         $unitPrice += $salePrice * ($priceValue / 100);
+                         $unitPrice = round($unitPrice);
+                     }
+                 }
+
+             }
+         }
+
+         return $unitPrice;
+     }
 
     /**
      * 상품목록의 합계 계산
@@ -241,5 +249,20 @@ class ShopHelper
         return $totalPrice;
     }
 
+    /**
+     * 상품옵션값 이름 가져오기
+     * Get Product OptionValue's name
+     * @param OptionInterface $option
+     * @return string
+     */
+    public function getOptionValueName(OptionInterface $option): string
+    {
+        if(!$option['is_collection']) return $option['value'];
+
+        // If collection value, stored value is code
+        foreach ($option['values'] as $value) {
+            if($value['code'] == $option['value']) return $value['name'];
+        }
+    }
 
 }
