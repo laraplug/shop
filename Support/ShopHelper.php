@@ -2,21 +2,17 @@
 
 namespace Modules\Shop\Support;
 
-use Modules\Shop\Entities\Shop;
-use Modules\Shop\Contracts\ShopItemInterface;
-use Modules\Shop\Contracts\ShopOrderInterface;
-use Modules\Shop\Repositories\ShopRepository;
-use Modules\Shop\Repositories\CurrencyRepository;
-use Modules\Shop\Repositories\PaymentGatewayManager;
-use Modules\Order\Entities\OrderStatus;
-
-use Modules\Order\Repositories\OrderRepository;
-
-use Modules\Product\Contracts\OptionInterface;
-
-use Jenssegers\Agent\Facades\Agent;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
+use Jenssegers\Agent\Facades\Agent;
+use Modules\Order\Entities\OrderStatus;
+use Modules\Order\Repositories\OrderRepository;
+use Modules\Shop\Contracts\ShopItemInterface;
+use Modules\Shop\Contracts\ShopProductOptionInterface;
+use Modules\Shop\Entities\Shop;
+use Modules\Shop\Repositories\CurrencyRepository;
+use Modules\Shop\Repositories\PaymentGatewayManager;
+use Modules\Shop\Repositories\ShopRepository;
 
 class ShopHelper
 {
@@ -44,7 +40,6 @@ class ShopHelper
      * @param ShopRepository $shop
      * @param CurrencyRepository $currency
      * @param OrderRepository $order
-     *
      */
     public function __construct(CurrencyRepository $currency, OrderRepository $order, PaymentGatewayManager $gateways)
     {
@@ -61,12 +56,12 @@ class ShopHelper
      */
     public function instance($id = 0)
     {
-        if($id) {
+        if ($id) {
             $this->shop = Shop::find($id);
-        }
-        else {
+        } else {
             $this->shop = Request::route('shop');
         }
+
         return $this;
     }
 
@@ -106,6 +101,7 @@ class ShopHelper
     public function currency($code = null)
     {
         $code = $code ?: $this->shop->currency_code;
+
         return $this->currency->getByAttributes(['code'=>$code])->first();
     }
 
@@ -127,7 +123,9 @@ class ShopHelper
     public function placeOrder(array $data, array $items)
     {
         $user = Auth::user();
-        if(!$user) return false;
+        if (!$user) {
+            return false;
+        }
 
         $data['shop_id'] = $this->shop->id;
         $data['user_id'] = $user->id;
@@ -160,11 +158,12 @@ class ShopHelper
      */
     public function getPaymentMethods()
     {
-        return $this->shop->paymentGateways->flatMap(function($gateway) {
+        return $this->shop->paymentGateways->flatMap(function ($gateway) {
             $result = [];
             foreach ($gateway->getAllowedPaymentMethods() as $method) {
-                $result[$gateway->getId().'|'.$method::getId()] = $method;
+                $result[$gateway->getId() . '|' . $method::getId()] = $method;
             }
+
             return $result;
         });
     }
@@ -176,11 +175,12 @@ class ShopHelper
      */
     public function getShippingMethods()
     {
-        return $this->shop->shippingGateways->mapWithKeys(function($gateway) {
+        return $this->shop->shippingGateways->mapWithKeys(function ($gateway) {
             $result = [];
             foreach ($gateway->getAllowedShippingMethods() as $method) {
-                $result[$gateway->getId().'|'.$method::getId()] = $method;
+                $result[$gateway->getId() . '|' . $method::getId()] = $method;
             }
+
             return $result;
         });
     }
@@ -192,11 +192,12 @@ class ShopHelper
      */
     public function getShippingMethodFees()
     {
-        return $this->shop->shippingGateways->mapWithKeys(function($gateway) {
+        return $this->shop->shippingGateways->mapWithKeys(function ($gateway) {
             $result = [];
             foreach ($gateway->getAllowedShippingMethods() as $method) {
-                $result[$gateway->getId().'|'.$method::getId()] = $method->getFee();
+                $result[$gateway->getId() . '|' . $method::getId()] = $method->getFee();
             }
+
             return $result;
         });
     }
@@ -207,29 +208,30 @@ class ShopHelper
      * @param  ShopItemInterface $item
      * @return int
      */
-     public function calculateUnitPrice(ShopItemInterface $item)
-     {
-         $salePrice = (int) $item['product']['sale_price'];
-         $unitPrice = $salePrice;
-         if (!empty($item['options'])) {
-             foreach ($item['options'] as $option) {
-                 if(!$option->is_collection) continue;
+    public function calculateUnitPrice(ShopItemInterface $item)
+    {
+        $salePrice = (int) $item['product']['sale_price'];
+        $unitPrice = $salePrice;
+        if (!empty($item['options'])) {
+            foreach ($item['options'] as $option) {
+                if (!$option->is_collection) {
+                    continue;
+                }
 
-                 if($value = $option->values->firstWhere('code', $option->value)) {
-                     $priceValue = (int) $value['price_value'];
-                     if ($value['price_type'] == 'FIXED') {
-                         $unitPrice += $priceValue;
-                     } elseif ($value['price_type'] == 'PERCENTAGE') {
-                         $unitPrice += $salePrice * ($priceValue / 100);
-                         $unitPrice = round($unitPrice);
-                     }
-                 }
+                if ($value = $option->values->firstWhere('code', $option->value)) {
+                    $priceValue = (int) $value['price_value'];
+                    if ($value['price_type'] == 'FIXED') {
+                        $unitPrice += $priceValue;
+                    } elseif ($value['price_type'] == 'PERCENTAGE') {
+                        $unitPrice += $salePrice * ($priceValue / 100);
+                        $unitPrice = round($unitPrice);
+                    }
+                }
+            }
+        }
 
-             }
-         }
-
-         return $unitPrice;
-     }
+        return $unitPrice;
+    }
 
     /**
      * 상품목록의 합계 계산
@@ -252,17 +254,20 @@ class ShopHelper
     /**
      * 상품옵션값 이름 가져오기
      * Get Product OptionValue's name
-     * @param OptionInterface $option
+     * @param ShopProductOptionInterface $option
      * @return string
      */
-    public function getOptionValueName(OptionInterface $option): string
+    public function getOptionValueName(ShopProductOptionInterface $option): string
     {
-        if(!$option['is_collection']) return $option['value'];
+        if (!$option['is_collection']) {
+            return $option['value'];
+        }
 
         // If collection value, stored value is code
         foreach ($option['values'] as $value) {
-            if($value['code'] == $option['value']) return $value['name'];
+            if ($value['code'] == $option['value']) {
+                return $value['name'];
+            }
         }
     }
-
 }
