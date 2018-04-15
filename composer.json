@@ -1,6 +1,17 @@
 {
     "name": "laraplug/shop",
-    "description": "",
+    "description": "Laravel Ecommerce Module built on top of AsgardCMS",
+    "keywords": [
+      "laravel",
+      "asgardcms",
+      "ecommerce",
+      "shop",
+      "module",
+      "cart",
+      "shopping",
+      "order",
+      "product",
+    ],
     "type": "asgard-module",
     "license": "MIT",
     "require": {
