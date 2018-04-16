@@ -20,6 +20,7 @@ return [
     'shipping fee' => '배송비',
     'grand total' => '최종금액',
     'saved' => '저장되었습니다',
+    'order cancelled' => '주문이 취소되었습니다',
     'okay' => '확인',
     'product' => [
       'description' => '상품상세',

@@ -2,18 +2,20 @@
 
 namespace Modules\Shop\Payments\Gateways;
 
-use JsonSerializable;
+use Carbon\Carbon;
 
-use Modules\Shop\Entities\PaymentGatewayConfig;
-
-use Modules\Shop\Contracts\ShopOrderInterface;
-use Modules\Shop\Contracts\ShopTransactionInterface;
-use Modules\Shop\Contracts\ShopPaymentMethodInterface;
-use Modules\Order\Entities\OrderStatus;
-use Illuminate\Support\Facades\Auth;
+use Modules\Order\Entities\Transaction;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use JsonSerializable;
+use Modules\Order\Entities\OrderStatus;
+use Modules\Shop\Contracts\ShopOrderInterface;
+use Modules\Shop\Contracts\ShopPaymentMethodInterface;
+use Modules\Shop\Contracts\ShopTransactionInterface;
+use Modules\Shop\Entities\PaymentGatewayConfig;
 
 /**
  * 결제 게이트웨이
@@ -21,7 +23,6 @@ use Illuminate\Contracts\Support\Jsonable;
  */
 abstract class PaymentGateway implements Arrayable, Jsonable, JsonSerializable
 {
-
     /**
      * 결제모듈 API 객체
      * Payment module's API context
@@ -128,6 +129,22 @@ abstract class PaymentGateway implements Arrayable, Jsonable, JsonSerializable
     }
 
     /**
+     * 게이트웨이 로그경로
+     * Get Gateway Name
+     * @return string
+     */
+    public function getLogPath()
+    {
+        $path = storage_path("logs/{$this->getId()}");
+        // 로그폴더 없다면 생성
+        if (!File::exists($path)) {
+            File::makeDirectory($path);
+        }
+
+        return $path;
+    }
+
+    /**
      * 게이트웨이 옵션
      * Get Gateway Options
      * @return string
@@ -182,7 +199,9 @@ abstract class PaymentGateway implements Arrayable, Jsonable, JsonSerializable
         $this->allowedPaymentMethodIds = $config->enabled_method_ids;
 
         foreach ($config->options as $key => $value) {
-            if(isset($this->options[$key])) $this->options[$key] = $value;
+            if (isset($this->options[$key])) {
+                $this->options[$key] = $value;
+            }
         }
     }
 
@@ -197,11 +216,10 @@ abstract class PaymentGateway implements Arrayable, Jsonable, JsonSerializable
     {
         $this->order = $order;
         $supported = $this->getSupportedPaymentMethods();
-        $this->paymentMethod = $supported->first(function($method) use ($order) {
+        $this->paymentMethod = $supported->first(function ($method) use ($order) {
             return $method::getId() == $order->payment_method_id;
         });
     }
-
 
     /**
      * 허용된 결제수단 리턴
@@ -210,8 +228,11 @@ abstract class PaymentGateway implements Arrayable, Jsonable, JsonSerializable
     public function getAllowedPaymentMethods()
     {
         $supported = $this->getSupportedPaymentMethods();
-        if(empty($this->allowedPaymentMethodIds) || !is_array($this->allowedPaymentMethodIds)) return $supported;
-        return $supported->filter(function($method) {
+        if (empty($this->allowedPaymentMethodIds) || !is_array($this->allowedPaymentMethodIds)) {
+            return $supported;
+        }
+
+        return $supported->filter(function ($method) {
             return in_array($method::getId(), $this->allowedPaymentMethodIds);
         });
     }
@@ -223,7 +244,7 @@ abstract class PaymentGateway implements Arrayable, Jsonable, JsonSerializable
     public function getSupportedPaymentMethods()
     {
         return collect($this->supportedPaymentMethods)
-        ->filter(function($method) {
+        ->filter(function ($method) {
             // PaymentMethod 클래스여야만 적용됨
             return is_subclass_of($method, ShopPaymentMethodInterface::class);
         });
@@ -268,8 +289,9 @@ abstract class PaymentGateway implements Arrayable, Jsonable, JsonSerializable
      */
     public function preparePayment($submitUrl)
     {
-        if($this->order->status_id !== OrderStatus::PENDING_PAYMENT) {
+        if ($this->order->status_id !== OrderStatus::PENDING_PAYMENT) {
             $message = trans('shop::payments.messages.cannot pay');
+
             return "
             <script>
             alert('$message');
@@ -277,6 +299,7 @@ abstract class PaymentGateway implements Arrayable, Jsonable, JsonSerializable
             </script>
             ";
         }
+
         return "";
     }
 
@@ -304,18 +327,22 @@ abstract class PaymentGateway implements Arrayable, Jsonable, JsonSerializable
     }
 
     /**
-     * 결제하기
+     * 결제성공시
      * Callback after payment
      *
      * @param  int $amount
+     * @param  string $bankName
+     * @param  string $bankAccount
+     * @param  array  $additionalData
      * @return ShopTransactionInterface|null
      */
-    protected function onPaySucceed($amount)
+    protected function onPaySucceed($amount, $bankName = '', $bankAccount = '', $additionalData = [])
     {
         $this->order->status_id = OrderStatus::PENDING;
         $this->order->save();
 
         $userId = Auth::user()->id;
+
         return $this->order->placeTransaction(
             $userId,
             $this->getId(),
@@ -323,8 +350,44 @@ abstract class PaymentGateway implements Arrayable, Jsonable, JsonSerializable
             $this->transactionId,
             $this->order->currency_code,
             $amount,
-            $this->message
+            $this->message,
+            $bankName,
+            $bankAccount,
+            $additionalData
         );
+    }
+
+    /**
+     * 취소하기
+     * Method to run cancel
+     *
+     * @param  Transaction $transaction
+     * @param  string      $reason
+     * @return ShopTransactionInterface|null
+     */
+    public function cancel(Transaction $transaction, $reason = null)
+    {
+        return null;
+    }
+
+    /**
+     * 취소성공시
+     * Callback after payment
+     *
+     * @param  Transaction $transaction
+     * @param  string      $reason
+     * @return ShopTransactionInterface|null
+     */
+    protected function onCancelSucceed(Transaction $transaction, $reason = null)
+    {
+        $transaction->cancelled_at = Carbon::now();
+        $transaction->cancel_reason = $reason;
+        $transaction->save();
+
+        $this->order->status_id = OrderStatus::CANCELED;
+        $this->order->save();
+
+        return $transaction;
     }
 
     /**
@@ -378,6 +441,4 @@ abstract class PaymentGateway implements Arrayable, Jsonable, JsonSerializable
     {
         return $this->getName();
     }
-
-
 }

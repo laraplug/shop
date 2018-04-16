@@ -10,7 +10,7 @@
       "cart",
       "shopping",
       "order",
-      "product",
+      "product"
     ],
     "type": "asgard-module",
     "license": "MIT",

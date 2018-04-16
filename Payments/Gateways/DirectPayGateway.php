@@ -17,7 +17,7 @@ class DirectPayGateway extends PaymentGateway
     /**
      * @var int
      */
-    protected $initialStatusId = OrderStatus::PENDING_APPROVAL;
+    protected $initialStatusId = OrderStatus::PENDING_PAYMENT_APPROVAL;
 
     /**
      * @var string

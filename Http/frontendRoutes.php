@@ -63,6 +63,13 @@ $router->group(['middleware' => ['domain.shop']], function($router) {
             'uses' => 'OrderController@pay'
         ]);
 
+        // 결제처리
+        // Pay Processing
+        $router->post('/orders/{order}/cancel', [
+            'as' => 'shop.order.pay.cancel',
+            'uses' => 'OrderController@cancel'
+        ]);
+
         // 마이페이지
         // My Page
         $router->get('/my/dashboard', [

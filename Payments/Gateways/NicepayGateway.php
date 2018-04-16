@@ -2,14 +2,13 @@
 
 namespace Modules\Shop\Payments\Gateways;
 
-use Modules\Shop\Exceptions\GatewayException;
+use Modules\Order\Entities\Transaction;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
-
-use Modules\Shop\Payments\Methods\Card;
-
+use Modules\Shop\Exceptions\GatewayException;
 use Modules\Shop\Payments\Gateways\Nicepay\NicepayLite;
+use Modules\Shop\Payments\Methods\Card;
 
 /**
  * Nicepay Gateway 나이스페이 게이트웨이
@@ -21,26 +20,8 @@ use Modules\Shop\Payments\Gateways\Nicepay\NicepayLite;
  * @license MIT
  * @package Laraplug\Nicepay
  */
-
 class NicepayGateway extends PaymentGateway
 {
-
-    /**
-     * @inheritDoc
-     */
-    public function getId()
-    {
-        return 'nicepay';
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getName()
-    {
-        return trans('shop::payments.gateways.nicepay');
-    }
-
     /**
      * 나이스페이 전송타입 : 일반
      * @var int
@@ -63,6 +44,34 @@ class NicepayGateway extends PaymentGateway
     const GOODS_CL_REAL = 0;
 
     /**
+     * 나이스페이 취소코드 : 전체
+     * @var int
+     */
+    const CANCEL_CODE_TOTAL = 0;
+
+    /**
+     * 나이스페이 취소코드 : 부분취소
+     * @var int
+     */
+    const CANCEL_CODE_PARTIAL = 1;
+
+    /**
+     * @inheritDoc
+     */
+    public function getId()
+    {
+        return 'nicepay';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getName()
+    {
+        return trans('shop::payments.gateways.nicepay');
+    }
+
+    /**
      * 나이스페이에서 지원되는 결제타입 설정
      * @var int
      */
@@ -79,6 +88,7 @@ class NicepayGateway extends PaymentGateway
     protected $options = [
         'transType' => self::TRANS_TYPE_NORMAL,
         'goodsCl' => self::GOODS_CL_CONTENTS,
+        'cancelPw' => '',
     ];
 
     /**
@@ -108,7 +118,7 @@ class NicepayGateway extends PaymentGateway
         $this->api->m_EdiDate = date("YmdHis");
 
         $csrf_field = csrf_field();
-        $hashString = bin2hex(hash('sha256', $this->api->m_EdiDate.$this->api->m_MID.$this->api->m_Price.$this->api->m_MerchantKey, true));
+        $hashString = bin2hex(hash('sha256', $this->api->m_EdiDate . $this->api->m_MID . $this->api->m_Price . $this->api->m_MerchantKey, true));
         $ip = Request::ip();
         // 전송타입
         $transType = $this->getOptionValue('transType');
@@ -171,22 +181,23 @@ HTML;
         $order = $this->order;
         $user = Auth::user();
 
-        if (!isset($this->merchantId))
+        if (!isset($this->merchantId)) {
             throw new GatewayException('상점ID가 설정되지 않았습니다', 0);
+        }
 
-        if (!isset($this->merchantToken))
+        if (!isset($this->merchantToken)) {
             throw new GatewayException('상점Key가 설정되지 않았습니다', 0);
+        }
 
-        if ($order->total <= 0)
+        if ($order->total <= 0) {
             throw new GatewayException('상품가격이 0', 0);
+        }
 
-        $this->api->m_NicepayHome   = storage_path('/logs/');               // 로그 디렉토리 설정
+        $this->api->m_NicepayHome   = $this->getLogPath();               // 로그 디렉토리 설정
         $this->api->m_ActionType    = "PYO";                  // ActionType
         $this->api->m_charSet       = "UTF8";                 // 인코딩
         $this->api->m_ssl           = "true";                 // 보안접속 여부
         $this->api->m_Price         = $order->total;          // 금액
-        $this->api->m_NetCancelAmt  = $order->total;          // 취소 금액
-        $this->api->m_NetCancelPW   = "";                     // 결제 취소 패스워드 설정
 
         /*
         *******************************************************
@@ -208,6 +219,7 @@ HTML;
         $this->api->m_TransType     = $data['TransType'];             // 일반 or 에스크로
         $this->api->m_TrKey         = $data['TrKey'];                 // 거래키
         $this->api->m_PayMethod     = $data['PayMethod'];             // 결제수단
+
         $this->api->startAction();
 
         /*
@@ -218,16 +230,74 @@ HTML;
         $resultCode = $this->api->m_ResultData["ResultCode"];
         $this->message = $this->api->m_ResultData["ResultMsg"];
 
-        if($data['PayMethod'] == "CARD"){
+        $bankName = '';
+        $bankAccount = '';
+        $additionalData = [];
+
+        if ($data['PayMethod'] == "CARD") {
             // 신용카드(정상 결과코드:3001)
-            if ($resultCode !== "3001")
-                throw new GatewayException('카드결제 에러: '.$this->message, 0);
+            if ($resultCode !== "3001") {
+                throw new GatewayException('카드결제 에러: ' . $this->message, 0);
+            }
+
+            $bankName = $this->api->m_ResultData["CardName"];
+            $bankAccount = $this->api->m_ResultData["CardNo"];
+            $additionalData['installment']  = $this->api->m_ResultData["CardQuota"];
         }
 
         $this->transactionId = $this->api->m_ResultData["TID"];
         $amount = $this->api->m_ResultData["Amt"];
 
-        return $this->onPaySucceed($amount);
+        return $this->onPaySucceed($amount, $bankName, $bankAccount, $additionalData);
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function cancel(Transaction $transaction, $reason = null)
+    {
+        if (!$transaction) {
+            throw new GatewayException('취소할 거래가 설정되지 않았습니다', 0);
+        }
+
+        if ($transaction->amount <= 0) {
+            throw new GatewayException('거래금액이 올바르지 않습니다', 0);
+        }
+
+        if (!isset($this->merchantId)) {
+            throw new GatewayException('상점ID가 설정되지 않았습니다', 0);
+        }
+
+        $this->transactionId = $transaction->gateway_transaction_id;
+
+        $this->api->m_NicepayHome       = $this->getLogPath();               // 로그 디렉토리 설정
+        $this->api->m_ActionType        = "CLO";                            // 취소 요청 선언
+        $this->api->m_CancelAmt         = $transaction->amount;             // 취소 금액 설정
+        $this->api->m_TID               = $transaction->gateway_transaction_id;  // 취소 TID 설정
+        $this->api->m_CancelMsg         = $reason;                     // 취소 사유
+        $this->api->m_PartialCancelCode = self::CANCEL_CODE_TOTAL;     // 전체 취소, 부분 취소 여부 설정
+        $this->api->m_CancelPwd         = $this->getOptionValue('cancelPw');       // 취소 비밀번호 설정
+        $this->api->m_ssl               = "true";                 // 보안접속 여부
+        $this->api->m_charSet           = "UTF8";                 // 인코딩
+
+        $this->api->startAction();
+
+        /*
+        *******************************************************
+        * <취소 성공 여부 확인>
+        *******************************************************
+        */
+
+        $resultCode = $this->api->m_ResultData["ResultCode"];
+        $this->message = $this->api->m_ResultData["ResultMsg"];
+
+        // 취소(정상 결과코드:2001)
+        if ($resultCode !== "2001") {
+            throw new GatewayException('결제취소 에러: ' . $this->message, 0);
+        }
+
+        $amount = $this->api->m_ResultData["CancelAmt"];
+
+        return $this->onCancelSucceed($transaction, $reason);
+    }
 }

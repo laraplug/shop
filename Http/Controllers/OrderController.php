@@ -5,19 +5,14 @@ namespace Modules\Shop\Http\Controllers;
 use Exception;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Modules\Cart\Facades\Cart;
-use Modules\Shop\Facades\Shop;
-
-use Modules\Shop\Support\ShopHelper;
-
-use Modules\Shop\Exceptions\GatewayException;
-
+use Modules\Core\Http\Controllers\BasePublicController;
 use Modules\Order\Entities\Order;
 use Modules\Order\Entities\OrderStatus;
-
-use Illuminate\Support\Facades\Auth;
-use Modules\Core\Http\Controllers\BasePublicController;
 use Modules\Order\Repositories\OrderRepository;
+use Modules\Shop\Exceptions\GatewayException;
+use Modules\Shop\Facades\Shop;
 
 /**
  * OrderController
@@ -49,10 +44,10 @@ class OrderController extends BasePublicController
     public function createFromCart(Request $request)
     {
         $user = Auth::user()->load('profile');
-        if($order = Order::scopeByUser($user->id, OrderStatus::PENDING_PAYMENT)->first()) {
+        if ($order = Order::scopeByUser($user->id, OrderStatus::PENDING_PAYMENT)->first()) {
             return redirect()->route('shop.order.pay.view', $order->id)->with('warning', trans('shop::payments.messages.payment pending order exists'));
         }
-        if(Cart::count() == 0) {
+        if (Cart::count() == 0) {
             return redirect()->route('shop.cart')->with('warning', trans('shop::theme.cart is empty'));
         }
         $items = Cart::items();
@@ -70,12 +65,12 @@ class OrderController extends BasePublicController
      */
     public function storeCart(Request $request)
     {
-        if(Cart::count() == 0) {
+        if (Cart::count() == 0) {
             return redirect()->route('shop.cart')->with('warning', trans('shop::theme.cart is empty'));
         }
         $data = $request->all();
         // 주문정보와 다른 배송지를 사용하지 않으면
-        if(empty($data['shipping_different_address'])) {
+        if (empty($data['shipping_different_address'])) {
             $data['shipping_name'] = $data['payment_name'];
             $data['shipping_postcode'] = $data['payment_postcode'];
             $data['shipping_address'] = $data['payment_address'];
@@ -99,7 +94,7 @@ class OrderController extends BasePublicController
 
         // 주문저장 성공하면
         // If order placing succeed
-        if($order = Cart::placeOrder($data)) {
+        if ($order = Cart::placeOrder($data)) {
             Cart::flush();
 
             return redirect()->route('shop.order.pay.view', $order->id);
@@ -123,7 +118,7 @@ class OrderController extends BasePublicController
 
         // 결제승인 대기중인 주문이면
         // If watiting for approval
-        if($order->status_id == OrderStatus::PENDING_APPROVAL) {
+        if ($order->status_id == OrderStatus::PENDING_PAYMENT_APPROVAL) {
             return redirect()->route('shop.my.order.view', $order->id)->with('warning', trans('shop::payments.messages.waiting for approval'));
         }
 
@@ -153,16 +148,15 @@ class OrderController extends BasePublicController
             $transaction = $order->payment_gateway->pay($request->all());
 
             return redirect()->route('shop.my.order.index')->with('success', trans('shop::payments.messages.pay succeed'));
-
-        } catch(GatewayException $e) {
+        } catch (GatewayException $e) {
             $error = $e->getMessage();
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $error = $e->getMessage();
         }
 
         // 결제에 실패하면
         // If pay failed
-        return redirect()->back()->withError('Message:'.$error);
+        return redirect()->back()->withError($error);
     }
 
     /**
@@ -176,4 +170,51 @@ class OrderController extends BasePublicController
         return view('shop.order.complete', compact(''));
     }
 
+    /**
+     * 주문취소
+     * Show order cancel
+     * @param  Order   $order
+     * @param  Request $request
+     * @return mixed
+     */
+    public function cancel(Order $order, Request $request)
+    {
+        // 결제전 상태면 바로 삭제됨
+        // Delete order if not paid
+        if ($order->status_id == OrderStatus::PENDING_PAYMENT || $order->status_id == OrderStatus::PENDING_PAYMENT_APPROVAL) {
+            $order->delete();
+            // 취소성공
+            return redirect()->route('homepage')->with('success', trans('shop::theme.order cancelled'));
+        }
+
+        // 결제완료 상태면 취소가능 (주문처리 시작전)
+        if($order->status_id == OrderStatus::PENDING) {
+            // 취소되지 않은 모든 결제내역 리턴
+            $error = '';
+            foreach ($order->transactions as $transaction) {
+                try {
+                    // 결제취소 성공하면
+                    // If pay cancel succeed
+                    $transaction = $order->payment_gateway->cancel($transaction, trans('shop::payments.user cancel'));
+
+                } catch (GatewayException $e) {
+                    $error = $e->getMessage();
+                    break;
+                } catch (Exception $e) {
+                    $error = $e->getMessage();
+                    break;
+                }
+            }
+
+            // 에러가 있으면 원래페이지로
+            if($error) {
+                return redirect()->back()->withError($error);
+            }
+
+            // 에러가 없으면 취소성공
+            return redirect()->route('shop.my.order.index')->with('success', trans('shop::theme.order cancelled'));
+        }
+
+        return redirect()->back()->withError(trans('shop::payments.messages.cannot cancel'));
+    }
 }

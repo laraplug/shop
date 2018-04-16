@@ -13,11 +13,17 @@ return [
         'edit' => 'shop::currencies.edit resource',
         'destroy' => 'shop::currencies.destroy resource',
     ],
-    'shop.gatewayconfigs' => [
-        'index' => 'shop::gatewayconfigs.list resource',
-        'create' => 'shop::gatewayconfigs.create resource',
-        'edit' => 'shop::gatewayconfigs.edit resource',
-        'destroy' => 'shop::gatewayconfigs.destroy resource',
+    'shop.paymentgatewayconfigs' => [
+        'index' => 'shop::paymentgatewayconfigs.list resource',
+        'create' => 'shop::paymentgatewayconfigs.create resource',
+        'edit' => 'shop::paymentgatewayconfigs.edit resource',
+        'destroy' => 'shop::paymentgatewayconfigs.destroy resource',
+    ],
+    'shop.shippinggatewayconfigs' => [
+        'index' => 'shop::shippinggatewayconfigs.list resource',
+        'create' => 'shop::shippinggatewayconfigs.create resource',
+        'edit' => 'shop::shippinggatewayconfigs.edit resource',
+        'destroy' => 'shop::shippinggatewayconfigs.destroy resource',
     ],
 // append
 

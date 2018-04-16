@@ -156,10 +156,13 @@ interface ShopOrderInterface
      * @param string $currencyCode  Currency Code.
      * @param int    $amount        Amount of money.
      * @param string $message   Transaction detail.
+     * @param string $bankName      Bank Name
+     * @param string $bankAccount   Bank Account
+     * @param array  $additionalData Additional Data
      *
      * @return object
      */
-    public function placeTransaction($userId, $gatewayId, $paymentMethod, $transactionId, $currencyCode, $amount, $message = '');
+    public function placeTransaction($userId, $gatewayId, $paymentMethod, $transactionId, $currencyCode, $amount, $message = '', $bankName = '', $bankAccount = '', $additionalData = []);
 
     /**
      * Creates the order's transportation.
