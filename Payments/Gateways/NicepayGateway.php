@@ -7,6 +7,8 @@ use Modules\Order\Entities\Transaction;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Modules\Shop\Exceptions\GatewayException;
+use Jenssegers\Agent\Facades\Agent;
+
 use Modules\Shop\Payments\Gateways\Nicepay\NicepayLite;
 use Modules\Shop\Payments\Methods\Card;
 
@@ -125,48 +127,90 @@ class NicepayGateway extends PaymentGateway
         $goodsCl = $this->getOptionValue('goodsCl');
 
         $this->api->requestProcess();
-        $this->payButtonOnClick = 'nicepayStart()';
 
-        return <<<HTML
-    <script src="https://web.nicepay.co.kr/flex/js/nicepay_tr_utf.js" type="text/javascript"></script>
-    <script type="text/javascript">
-    //결제창 최초 요청시 실행됩니다.
-    function nicepayStart(){
-        goPay(document.payForm);
-    }
-    //결제 최종 요청시 실행됩니다. <<'nicepaySubmit()' 이름 수정 불가능>>
-    function nicepaySubmit(){
-        document.payForm.submit();
-    }
-    //결제창 종료 함수 <<'nicepayClose()' 이름 수정 불가능>>
-    function nicepayClose(){
-        alert("결제가 취소 되었습니다");
-    }
-    </script>
-    <form name="payForm" method="post" action="$callbackUrl">
-        $csrf_field
-        <!-- 정보 -->
-        <input type="hidden" name="PayMethod" value="$paymentMethod" />
-        <input type="hidden" name="GoodsName" value="{$this->api->m_GoodsName}" />
-        <input type="hidden" name="GoodsCnt" value="{$order->count}" />
-        <input type="hidden" name="Amt" value="{$this->api->m_Price}" />
-        <input type="hidden" name="BuyerName" value="{$this->api->m_BuyerName}" />
-        <input type="hidden" name="BuyerTel" value="{$this->api->m_BuyerTel}" />
-        <input type="hidden" name="BuyerAddr" value="{$order->payment_address}" />
-        <input type="hidden" name="Moid" value="{$this->api->m_Moid}" />
-        <input type="hidden" name="MID" value="{$this->api->m_MID}" />
-        <!-- IP -->
-        <input type="hidden" name="UserIP" value="$ip" />
-        <!-- 옵션 -->
-        <input type="hidden" name="BuyerEmail" value="{$this->api->m_BuyerEmail}" />
-        <input type="hidden" name="TransType" value="{$transType}" />
-        <input type="hidden" name="GoodsCl" value="{$goodsCl}" />
-        <!-- 변경 불가 -->
-        <input type="hidden" name="EdiDate" value="{$this->api->m_EdiDate}" />
-        <input type="hidden" name="EncryptData" value="$hashString" />
-        <input type="hidden" name="TrKey" value="" />
-    </form>
+        // 모바일결제
+        if(Agent::isMobile()) {
+            $this->payButtonOnClick = 'goPay()';
+
+            return <<<HTML
+            <script type="text/javascript">
+            //스마트폰 결제 요청
+            function goPay() {
+                document.payForm.submit();
+                document.charset = "euc-kr";
+            }
+            </script>
+            <form name="payForm" method="post" target="_self" action="https://web.nicepay.co.kr/smart/paySmart.jsp" accept-charset="euc-kr">
+                {$csrf_field}
+                <!-- 정보 -->
+                <input type="hidden" name="PayMethod" value="$paymentMethod" />
+                <input type="hidden" name="GoodsName" value="{$this->api->m_GoodsName}" />
+                <input type="hidden" name="GoodsCnt" value="{$order->count}" />
+                <input type="hidden" name="Amt" value="{$this->api->m_Price}" />
+                <input type="hidden" name="BuyerName" value="{$this->api->m_BuyerName}" />
+                <input type="hidden" name="BuyerTel" value="{$this->api->m_BuyerTel}" />
+                <input type="hidden" name="BuyerAddr" value="{$order->payment_address}" />
+                <input type="hidden" name="Moid" value="{$this->api->m_Moid}" />
+                <input type="hidden" name="MID" value="{$this->api->m_MID}" />
+                <!-- IP -->
+                <input type="hidden" name="UserIP" value="$ip" />
+                <!-- 옵션 -->
+                <input type="hidden" name="ReturnURL" value="{$callbackUrl}"/>
+                <input type="hidden" name="BuyerEmail" value="{$this->api->m_BuyerEmail}" />
+                <input type="hidden" name="TransType" value="{$transType}" />
+                <input type="hidden" name="GoodsCl" value="{$goodsCl}" />
+                <!-- 변경 불가 -->
+                <input type="hidden" name="EdiDate" value="{$this->api->m_EdiDate}" />
+                <input type="hidden" name="EncryptData" value="$hashString" />
+            </form>
 HTML;
+        }
+        // PC결제
+        else {
+            $this->payButtonOnClick = 'nicepayStart()';
+
+            return <<<HTML
+            <script src="https://web.nicepay.co.kr/flex/js/nicepay_tr_utf.js" type="text/javascript"></script>
+            <script type="text/javascript">
+            //결제창 최초 요청시 실행됩니다.
+            function nicepayStart(){
+                goPay(document.payForm);
+            }
+            //결제 최종 요청시 실행됩니다. <<'nicepaySubmit()' 이름 수정 불가능>>
+            function nicepaySubmit(){
+                document.payForm.submit();
+            }
+            //결제창 종료 함수 <<'nicepayClose()' 이름 수정 불가능>>
+            function nicepayClose(){
+                alert("결제가 취소 되었습니다");
+            }
+            </script>
+            <form name="payForm" method="post" action="$callbackUrl">
+                {$csrf_field}
+                <!-- 정보 -->
+                <input type="hidden" name="PayMethod" value="$paymentMethod" />
+                <input type="hidden" name="GoodsName" value="{$this->api->m_GoodsName}" />
+                <input type="hidden" name="GoodsCnt" value="{$order->count}" />
+                <input type="hidden" name="Amt" value="{$this->api->m_Price}" />
+                <input type="hidden" name="BuyerName" value="{$this->api->m_BuyerName}" />
+                <input type="hidden" name="BuyerTel" value="{$this->api->m_BuyerTel}" />
+                <input type="hidden" name="BuyerAddr" value="{$order->payment_address}" />
+                <input type="hidden" name="Moid" value="{$this->api->m_Moid}" />
+                <input type="hidden" name="MID" value="{$this->api->m_MID}" />
+                <!-- IP -->
+                <input type="hidden" name="UserIP" value="$ip" />
+                <!-- 옵션 -->
+                <input type="hidden" name="BuyerEmail" value="{$this->api->m_BuyerEmail}" />
+                <input type="hidden" name="TransType" value="{$transType}" />
+                <input type="hidden" name="GoodsCl" value="{$goodsCl}" />
+                <!-- 변경 불가 -->
+                <input type="hidden" name="EdiDate" value="{$this->api->m_EdiDate}" />
+                <input type="hidden" name="EncryptData" value="$hashString" />
+                <input type="hidden" name="TrKey" value="" />
+            </form>
+HTML;
+        }
+
     }
 
     /**
