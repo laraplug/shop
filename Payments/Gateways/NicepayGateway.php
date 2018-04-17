@@ -265,6 +265,9 @@ HTML;
         $this->api->m_TrKey         = $data['TrKey'];                 // 거래키
         $this->api->m_PayMethod     = $data['PayMethod'];             // 결제수단
 
+        // 모바일결제에서 BuyerAddr이 누락되어 수동으로 넣어줌
+        $_POST['BuyerAddr'] = $order->payment_address;
+
         $this->api->startAction();
 
         /*
