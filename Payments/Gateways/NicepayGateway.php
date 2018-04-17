@@ -248,6 +248,7 @@ HTML;
         * <결제 결과 필드>
         *******************************************************
         */
+        dd($data);
         $this->api->m_BuyerName     = $data['BuyerName'];             // 구매자명
         $this->api->m_BuyerEmail    = $data['BuyerEmail'];            // 구매자이메일
         $this->api->m_BuyerTel      = $data['BuyerTel'];              // 구매자연락처
