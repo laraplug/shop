@@ -155,6 +155,7 @@ class NicepayGateway extends PaymentGateway
                 <!-- IP -->
                 <input type="hidden" name="UserIP" value="$ip" />
                 <!-- 옵션 -->
+                <input type="hidden" name="CharSet" value="utf-8"/>
                 <input type="hidden" name="ReturnURL" value="{$callbackUrl}"/>
                 <input type="hidden" name="BuyerEmail" value="{$this->api->m_BuyerEmail}" />
                 <input type="hidden" name="TransType" value="{$transType}" />
