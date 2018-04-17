@@ -24,7 +24,7 @@ class CategoryHelper
      */
     public function __construct(ShopHelper $shopHelper, CategoryRepository $category)
     {
-        $this->shop = $shopHelper->shop();
+        $this->shop = $shopHelper->model();
         $this->category = $category;
     }
 

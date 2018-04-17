@@ -26,6 +26,7 @@ return [
     'subdomain' => '서브도메인',
     'name' => '이름',
     'description' => '설명',
+    'company_name' => '회사명',
     'owner_name' => '대표자명',
     'email' => '이메일',
     'postcode' => '우편번호',

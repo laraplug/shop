@@ -39,18 +39,21 @@
 
                     <div class="row">
                         <div class="col-sm-6">
-                            {!! Form::normalInput('owner_name', trans('shop::shops.owner_name'), $errors, $shop) !!}
+                            {!! Form::normalInput('company_name', trans('shop::shops.company_name'), $errors, $shop) !!}
                         </div>
                         <div class="col-sm-6">
-                            {!! Form::normalInput('email', trans('shop::shops.email'), $errors, $shop) !!}
+                            {!! Form::normalInput('owner_name', trans('shop::shops.owner_name'), $errors, $shop) !!}
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
+                            {!! Form::normalInput('email', trans('shop::shops.email'), $errors, $shop) !!}
+                        </div>
+                        <div class="col-sm-4">
                             {!! Form::normalInput('phone', trans('shop::shops.phone'), $errors, $shop) !!}
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             {!! Form::normalInput('fax', trans('shop::shops.fax'), $errors, $shop) !!}
                         </div>
                     </div>
@@ -59,13 +62,13 @@
                         <div class="col-sm-6">
                             {!! Form::normalInput('postcode', trans('shop::shops.postcode'), $errors, $shop) !!}
                         </div>
-                        <div class="col-sm-6">
-                            {!! Form::normalInput('address', trans('shop::shops.address'), $errors, $shop) !!}
-                        </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-sm-12">
+                        <div class="col-sm-6">
+                            {!! Form::normalInput('address', trans('shop::shops.address'), $errors, $shop) !!}
+                        </div>
+                        <div class="col-sm-6">
                             {!! Form::normalInput('address_detail', trans('shop::shops.address_detail'), $errors, $shop) !!}
                         </div>
                     </div>

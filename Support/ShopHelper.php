@@ -69,7 +69,7 @@ class ShopHelper
      * Get current shop
      * @return mixed
      */
-    public function shop()
+    public function model()
     {
         return $this->shop;
     }
@@ -111,7 +111,7 @@ class ShopHelper
      */
     protected function getCurrencyCode()
     {
-        return $this->shop() ? $this->shop()->currency_code :  $this->getCurrencies()->first()->code;
+        return $this->model() ? $this->model()->currency_code :  $this->getCurrencies()->first()->code;
     }
 
     /**

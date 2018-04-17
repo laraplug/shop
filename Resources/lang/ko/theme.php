@@ -50,6 +50,9 @@ return [
     'title' => [
       'category' => '카테고리',
       'product_detail' => '상품상세',
+      'about' => '안내',
+      'notice' => '공지사항',
+      'contact us' => '회사정보',
     ],
     'pages' => [
       'home' => [

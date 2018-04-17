@@ -16,6 +16,7 @@ class Shop extends Model
         'subdomain',
         'name',
         'description',
+        'company_name',
         'owner_name',
         'email',
         'postcode',

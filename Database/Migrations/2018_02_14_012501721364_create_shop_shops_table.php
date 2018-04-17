@@ -20,6 +20,8 @@ class CreateShopShopsTable extends Migration
 
             $table->string('name')->nullable();
             $table->text('description')->nullable();
+
+            $table->string('company_name')->nullable();
             $table->string('owner_name')->nullable();
             $table->string('email')->nullable();
             $table->string('postcode')->nullable();
