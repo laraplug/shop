@@ -324,7 +324,7 @@ HTML;
         $this->api->m_TID               = $transaction->gateway_transaction_id;  // 취소 TID 설정
         $this->api->m_CancelMsg         = $reason;                     // 취소 사유
         $this->api->m_PartialCancelCode = self::CANCEL_CODE_TOTAL;     // 전체 취소, 부분 취소 여부 설정
-        $this->api->m_CancelPwd         = $this->getOptionValue('cancelPw');       // 취소 비밀번호 설정
+        $this->api->m_CancelPwd         = $this->getOptionValue('CancelPw');       // 취소 비밀번호 설정
         $this->api->m_ssl               = "true";                 // 보안접속 여부
         $this->api->m_charSet           = "UTF8";                 // 인코딩
 
