@@ -255,14 +255,14 @@ HTML;
         $this->api->m_BuyerTel      = $data['BuyerTel'];              // 구매자연락처
         $this->api->m_GoodsName     = $data['GoodsName'];             // 상품명
         $this->api->m_GoodsCnt      = $data['GoodsCnt'];            // 상품개수
-        $this->api->m_GoodsCl       = $data['GoodsCl'];               // 실물 or 컨텐츠
+        $this->api->m_GoodsCl       = $this->getOptionValue('GoodsCl');  // 실물 or 컨텐츠
         $this->api->m_Moid          = $data['Moid'];                  // 주문번호
         $this->api->m_MallUserID    = $user->email;                         // 회원ID
         $this->api->m_MID           = $data['MID'];                   // MID
         //$this->api->m_MallIP        = $data['MallIP'];                // Mall IP
         $this->api->m_MerchantKey   = $this->merchantToken;           // 상점키
         $this->api->m_LicenseKey    = $this->merchantToken;           // 상점키
-        $this->api->m_TransType     = $data['TransType'];             // 일반 or 에스크로
+        $this->api->m_TransType     = $this->getOptionValue('TransType');  // 일반 or 에스크로
         $this->api->m_TrKey         = $data['TrKey'];                 // 거래키
         $this->api->m_PayMethod     = $data['PayMethod'];             // 결제수단
 
