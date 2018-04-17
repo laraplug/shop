@@ -88,9 +88,9 @@ class NicepayGateway extends PaymentGateway
      * @var string
      */
     protected $options = [
-        'transType' => self::TRANS_TYPE_NORMAL,
-        'goodsCl' => self::GOODS_CL_CONTENTS,
-        'cancelPw' => '',
+        'TransType' => self::TRANS_TYPE_NORMAL,
+        'GoodsCl' => self::GOODS_CL_CONTENTS,
+        'CancelPw' => '',
     ];
 
     /**
@@ -123,8 +123,8 @@ class NicepayGateway extends PaymentGateway
         $hashString = bin2hex(hash('sha256', $this->api->m_EdiDate . $this->api->m_MID . $this->api->m_Price . $this->api->m_MerchantKey, true));
         $ip = Request::ip();
         // 전송타입
-        $transType = $this->getOptionValue('transType');
-        $goodsCl = $this->getOptionValue('goodsCl');
+        $transType = $this->getOptionValue('TransType');
+        $goodsCl = $this->getOptionValue('GoodsCl');
 
         $this->api->requestProcess();
 
@@ -201,7 +201,7 @@ HTML;
                 <input type="hidden" name="UserIP" value="$ip" />
                 <!-- 옵션 -->
                 <input type="hidden" name="BuyerEmail" value="{$this->api->m_BuyerEmail}" />
-                <input type="hidden" name="TransType" value="{$transType}" />
+                <input type="hidden" name="TransType" value="{$TransType}" />
                 <input type="hidden" name="GoodsCl" value="{$goodsCl}" />
                 <!-- 변경 불가 -->
                 <input type="hidden" name="EdiDate" value="{$this->api->m_EdiDate}" />
