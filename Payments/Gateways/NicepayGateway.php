@@ -202,7 +202,7 @@ HTML;
                 <input type="hidden" name="UserIP" value="$ip" />
                 <!-- 옵션 -->
                 <input type="hidden" name="BuyerEmail" value="{$this->api->m_BuyerEmail}" />
-                <input type="hidden" name="TransType" value="{$TransType}" />
+                <input type="hidden" name="TransType" value="{$transType}" />
                 <input type="hidden" name="GoodsCl" value="{$goodsCl}" />
                 <!-- 변경 불가 -->
                 <input type="hidden" name="EdiDate" value="{$this->api->m_EdiDate}" />

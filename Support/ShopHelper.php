@@ -2,6 +2,8 @@
 
 namespace Modules\Shop\Support;
 
+use Illuminate\Support\Collection;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Jenssegers\Agent\Facades\Agent;
@@ -142,7 +144,9 @@ class ShopHelper
         $order = $this->order->create($data);
 
         // Save Items
-        $order->importItems($items);
+        foreach ($items as $item) {
+            $order->importItem($item);
+        }
 
         // Set initial status of gateway
         $order->status_id = $order->payment_gateway->getInitialStatusId();

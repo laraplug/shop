@@ -13,7 +13,7 @@ interface ShopItemInterface
     /**
      * Returns product
      *
-     * @return mixed
+     * @return ShopProductInterface
      */
     public function getProductAttribute();
 
@@ -44,5 +44,12 @@ interface ShopItemInterface
      * @return string
      */
     public function getTotalAttribute();
+
+    /**
+     * 하위 상품을 가져옴
+     * Get Children Items
+     * @return array
+     */
+    public function getChildrenAttribute();
 
 }

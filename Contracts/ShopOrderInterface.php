@@ -181,9 +181,9 @@ interface ShopOrderInterface
 
     /**
      * Convert cart item into order item
-     * @param array $items
+     * @param ShopItemInterface $item
      * @return void
      */
-    public function importItems(array $items);
+    public function importItem(ShopItemInterface $item);
 
 }
