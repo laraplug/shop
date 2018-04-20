@@ -30,13 +30,23 @@ class ProductHelper
     }
 
     /**
+     * 상점의 상품 쿼리
+     * Products Query
+     * @return mixed
+     */
+    public function productsQuery()
+    {
+        return $this->shop->products()->where('status', 'active');
+    }
+
+    /**
      * Get Lastest Products
      * @param  int $limit
      * @return mixed
      */
     public function getLatest($limit = 10)
     {
-        return $this->shop->products()->paginate($limit);
+        return $this->productsQuery()->paginate($limit);
     }
 
     /**
@@ -50,7 +60,7 @@ class ProductHelper
         $category = $this->category->find($categoryId);
         if(!$category) return collect();
         $categoryIds = collect($this->getChildrenCategories($category))->pluck('id');
-        return $this->shop->products()->whereIn('category_id', $categoryIds)->paginate($limit);
+        return $this->productsQuery()->whereIn('category_id', $categoryIds)->paginate($limit);
     }
 
     protected function getChildrenCategories(Category $category, $results = [])
