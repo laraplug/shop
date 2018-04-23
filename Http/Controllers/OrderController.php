@@ -51,9 +51,10 @@ class OrderController extends BasePublicController
             return redirect()->route('shop.cart')->with('warning', trans('shop::theme.cart is empty'));
         }
         $items = Cart::items();
-        $subTotal = Cart::getTotalPrice();
+        $totalShipping = Cart::getTotalShipping();
+        $totalPrice = Cart::getTotalPrice();
 
-        return view('shop.order.checkout', compact('items', 'subTotal', 'user'));
+        return view('shop.order.checkout', compact('items', 'totalShipping', 'totalPrice', 'user'));
     }
 
     /**
@@ -82,15 +83,6 @@ class OrderController extends BasePublicController
         list($paymentGatewayId, $paymentMethodId) = explode('|', $request->payment_gateway_method);
         $data['payment_gateway_id'] = $paymentGatewayId;
         $data['payment_method_id'] = $paymentMethodId;
-
-        // 배송비 계산
-        $fees = Shop::getShippingMethodFees();
-        $fee = array_get($fees, $request->shipping_gateway_method, 0);
-        Cart::setShippingFee($fee);
-        // 배송게이트웨이ID & 배송수단ID 파싱
-        list($shippingGatewayId, $shippingMethodId) = explode('|', $request->shipping_gateway_method);
-        $data['shipping_gateway_id'] = $shippingGatewayId;
-        $data['shipping_method_id'] = $shippingMethodId;
 
         // 주문저장 성공하면
         // If order placing succeed

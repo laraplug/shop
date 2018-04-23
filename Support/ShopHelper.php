@@ -68,6 +68,15 @@ class ShopHelper
     }
 
     /**
+     * Get current shop id
+     * @return mixed
+     */
+    public function id()
+    {
+        return $this->shop ? $this->shop->id : 0;
+    }
+
+    /**
      * Get current shop
      * @return mixed
      */

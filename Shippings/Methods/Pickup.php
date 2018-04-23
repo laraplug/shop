@@ -5,7 +5,7 @@ namespace Modules\Shop\Shippings\Methods;
 use Modules\Shop\Contracts\ShopShippingMethodInterface;
 
 /**
- * 픽업배송
+ * 픽업
  * Pickup
  */
 class Pickup implements ShopShippingMethodInterface

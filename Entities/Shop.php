@@ -37,7 +37,7 @@ class Shop extends Model
 
     /**
      * Get Products belongs to Shop
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function products()
     {

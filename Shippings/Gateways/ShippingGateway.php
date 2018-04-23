@@ -2,19 +2,15 @@
 
 namespace Modules\Shop\Shippings\Gateways;
 
-use JsonSerializable;
-
-use Modules\Shop\Entities\ShippingGatewayConfig;
-
-use Modules\Shop\Contracts\ShopOrderInterface;
-use Modules\Shop\Contracts\ShopTransactionInterface;
-use Modules\Shop\Contracts\ShopTransportationInterface;
-use Modules\Shop\Contracts\ShopShippingMethodInterface;
-use Modules\Order\Entities\OrderStatus;
-use Illuminate\Support\Facades\Auth;
-
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Support\Facades\Auth;
+use JsonSerializable;
+use Modules\Order\Entities\OrderStatus;
+use Modules\Shop\Contracts\ShopOrderInterface;
+use Modules\Shop\Contracts\ShopShippingMethodInterface;
+use Modules\Shop\Contracts\ShopTransportationInterface;
+use Modules\Shop\Entities\ShippingGatewayConfig;
 
 /**
  * 배송 게이트웨이
@@ -22,7 +18,6 @@ use Illuminate\Contracts\Support\Jsonable;
  */
 abstract class ShippingGateway implements Arrayable, Jsonable, JsonSerializable
 {
-
     /**
      * 배송모듈 API 객체
      * Shipping module's API context
@@ -183,7 +178,9 @@ abstract class ShippingGateway implements Arrayable, Jsonable, JsonSerializable
         $this->allowedShippingMethodIds = $config->enabled_method_ids;
 
         foreach ($config->options as $key => $value) {
-            if(isset($this->options[$key])) $this->options[$key] = $value;
+            if (isset($this->options[$key])) {
+                $this->options[$key] = $value;
+            }
         }
     }
 
@@ -198,11 +195,10 @@ abstract class ShippingGateway implements Arrayable, Jsonable, JsonSerializable
     {
         $this->order = $order;
         $supported = $this->getSupportedShippingMethods();
-        $this->shippingMethod = $supported->first(function($method) use ($order) {
+        $this->shippingMethod = $supported->first(function ($method) use ($order) {
             return $method::getId() == $order->shipping_method_id;
         });
     }
-
 
     /**
      * 허용된 배송수단 리턴
@@ -220,11 +216,11 @@ abstract class ShippingGateway implements Arrayable, Jsonable, JsonSerializable
     public function getSupportedShippingMethods()
     {
         return collect($this->supportedShippingMethods)
-        ->filter(function($method) {
+        ->filter(function ($method) {
             // ShippingMethod 클래스여야만 적용됨
             return is_subclass_of($method, ShopShippingMethodInterface::class);
         })
-        ->mapWithKeys(function($method) {
+        ->mapWithKeys(function ($method) {
             return [$method::getId() => new $method($this->getFee($method))];
         });
     }
@@ -268,8 +264,9 @@ abstract class ShippingGateway implements Arrayable, Jsonable, JsonSerializable
      */
     public function prepareShipping($submitUrl)
     {
-        if($this->order->status_id !== OrderStatus::PROCESSED) {
+        if ($this->order->status_id !== OrderStatus::PROCESSED) {
             $message = trans('shop::shippings.messages.cannot ship');
+
             return "
             <script>
             alert('$message');
@@ -277,6 +274,7 @@ abstract class ShippingGateway implements Arrayable, Jsonable, JsonSerializable
             </script>
             ";
         }
+
         return "";
     }
 
@@ -316,6 +314,7 @@ abstract class ShippingGateway implements Arrayable, Jsonable, JsonSerializable
         $this->order->save();
 
         $userId = Auth::user()->id;
+
         return $this->order->placeTransportation(
             $userId,
             $this->getId(),
@@ -388,6 +387,4 @@ abstract class ShippingGateway implements Arrayable, Jsonable, JsonSerializable
     {
         return $this->getName();
     }
-
-
 }
