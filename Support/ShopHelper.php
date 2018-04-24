@@ -199,23 +199,6 @@ class ShopHelper
     }
 
     /**
-     * 게이트웨이별 배송수단별 요금목록 가져오기
-     * Get PaymentMethod Fees of Gateways
-     * @return array
-     */
-    public function getShippingMethodFees()
-    {
-        return $this->shop->shippingGateways->mapWithKeys(function ($gateway) {
-            $result = [];
-            foreach ($gateway->getAllowedShippingMethods() as $method) {
-                $result[$gateway->getId() . '|' . $method::getId()] = $method->getFee();
-            }
-
-            return $result;
-        });
-    }
-
-    /**
      * 상품 단가 계산
      * Calculate Single Item Price
      * @param  ShopItemInterface $item

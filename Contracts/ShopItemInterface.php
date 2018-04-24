@@ -54,10 +54,10 @@ interface ShopItemInterface
 
     /**
      * 주문용 배열로 변환
-     * @param ShopItemInterface|null $orderItem  부모 주문아이템 (children일때만 넘어옴)
+     * @param ShopItemInterface|null $parentItem  부모 주문아이템 (children일때만 넘어옴)
      * @return array
      */
-    public function toOrderItemArray(ShopItemInterface $orderItem = null);
+    public function toOrderItemArray(ShopItemInterface $parentItem = null);
 
 
 }
