@@ -111,15 +111,7 @@ class MyController extends BasePublicController
    public function profileStore(Request $request)
    {
        $data = $request->all();
-       $authUser = $this->auth->user();
-
-       $user = $this->user->findByCredentials([
-           'email' => $authUser->email,
-           'password' => $request->old_password,
-       ]);
-       if(!$user) {
-           return redirect()->back()->withErrors(trans('shop::theme.invalid password'));
-       }
+       $user = $this->auth->user();
 
        $this->user->update($user, $request->all());
 
