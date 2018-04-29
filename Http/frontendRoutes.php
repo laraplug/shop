@@ -70,7 +70,7 @@ $router->group(['middleware' => ['domain.shop']], function($router) {
             'uses' => 'OrderController@cancel'
         ]);
 
-        // 마이페이지
+        // 마이페이지 - 대시보드
         // My Page
         $router->get('/my/dashboard', [
             'as' => 'shop.my',
@@ -89,6 +89,18 @@ $router->group(['middleware' => ['domain.shop']], function($router) {
         $router->get('/my/orders/{order}', [
             'as' => 'shop.my.order.view',
             'uses' => 'MyController@orderView'
+        ]);
+
+        // 프로필
+        // Profile
+        $router->get('/my/profile', [
+            'as' => 'shop.my.profile',
+            'uses' => 'MyController@profile'
+        ]);
+
+        $router->post('/my/profile', [
+            'as' => 'shop.my.profile.store',
+            'uses' => 'MyController@profileStore'
         ]);
 
     });

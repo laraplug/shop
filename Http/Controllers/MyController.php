@@ -4,6 +4,8 @@ namespace Modules\Shop\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Modules\User\Contracts\Authentication;
+use Modules\User\Repositories\UserRepository;
+
 use Modules\Order\Entities\Order;
 use Modules\Core\Http\Controllers\BasePublicController;
 use Modules\Order\Repositories\OrderRepository;
@@ -24,14 +26,20 @@ class MyController extends BasePublicController
     protected $order;
 
     /**
+     * @var UserRepository
+     */
+    protected $user;
+
+    /**
      * @inheritDoc
      */
-    public function __construct(Authentication $auth, OrderRepository $order)
+    public function __construct(Authentication $auth, OrderRepository $order, UserRepository $user)
     {
         parent::__construct();
 
         $this->auth = $auth;
         $this->order = $order;
+        $this->user = $user;
     }
 
     /**
@@ -78,5 +86,44 @@ class MyController extends BasePublicController
 
         return view('shop.my.order.view', compact('user', 'order'));
     }
+
+    /**
+     * 프로필
+     * Profile
+     *
+     * @param  Request $request
+     * @return \Illuminate\View\View
+     */
+    public function profile(Request $request)
+    {
+        $user = $this->auth->user();
+        $user->load('profile');
+        return view('shop.my.profile', compact('user'));
+    }
+
+    /**
+    * 프로필 저장
+    * Profile Store
+    *
+    * @param  Request $request
+    * @return \Illuminate\View\View
+    */
+   public function profileStore(Request $request)
+   {
+       $data = $request->all();
+       $authUser = $this->auth->user();
+
+       $user = $this->user->findByCredentials([
+           'email' => $authUser->email,
+           'password' => $request->old_password,
+       ]);
+       if(!$user) {
+           return redirect()->back()->withErrors(trans('shop::theme.invalid password'));
+       }
+
+       $this->user->update($user, $request->all());
+
+       return redirect()->route('shop.my.profile')->with('success', trans('shop::theme.profile saved'));
+   }
 
 }
