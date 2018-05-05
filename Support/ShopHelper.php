@@ -149,14 +149,11 @@ class ShopHelper
 
         $data['status_id'] = OrderStatus::PENDING_PAYMENT;
 
+        $data['items'] = $items;
+
         // Save order data
         $order = $this->order->create($data);
-
-        // Save Items
-        foreach ($items as $item) {
-            $order->importItem($item);
-        }
-
+        
         // Set initial status of gateway
         $order->status_id = $order->payment_gateway->getInitialStatusId();
         $order->save();

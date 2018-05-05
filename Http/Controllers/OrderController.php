@@ -152,17 +152,6 @@ class OrderController extends BasePublicController
     }
 
     /**
-     * 주문완료페이지
-     * Show order complete page
-     * @param  Request $request
-     * @return mixed
-     */
-    public function complete(Request $request)
-    {
-        return view('shop.order.complete', compact(''));
-    }
-
-    /**
      * 주문취소
      * Show order cancel
      * @param  Order   $order
