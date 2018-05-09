@@ -5,6 +5,9 @@
 [![Total Downloads](https://poser.pugx.org/laraplug/shop/d/total.svg?format=flat-square)](https://packagist.org/packages/laraplug/shop)
 [![PHP7 Compatible](https://img.shields.io/badge/php-7-green.svg?style=flat-square)](https://packagist.org/packages/laraplug/shop)
 
+### 현재 이 모듈은 활발하게 개발이 진행되고 있습니다.
+### 도움이 필요합니다! 영문번역은 완전하지 않을수 있습니다. 어떤 PR이든 환영입니다 :)
+
 # Laraplug Shop
 
 **Laraplug Shop** 은 유연하고, 커스터마이징이 쉬운 쇼핑몰입니다. [AsgardCMS](https://github.com/AsgardCms/Platform) 플랫폼을 기반으로 제작되었습니다.
