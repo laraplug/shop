@@ -3,7 +3,7 @@
     "alias": "shop",
     "description": "",
     "keywords": [],
-    "version": "0.1.0",
+    "version": "0.3.0",
     "active": 1,
     "order": 11,
     "providers": [

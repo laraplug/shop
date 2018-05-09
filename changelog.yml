@@ -1,5 +1,9 @@
 url: https://github.com/laraplug/shop
 versions:
+    "0.3.0":
+        added:
+            - Integration with Cart & Order module
+            - Done with implementing basic shopping process
     "0.2.0":
         added:
             - Integration with Product & Attribute module
