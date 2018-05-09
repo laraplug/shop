@@ -22,6 +22,7 @@
         "laraplug/attribute-module": "0.*",
         "laraplug/order-module": "0.*",
         "laraplug/cart-module": "0.*",
+        "laraplug/theme-module": "0.*",
         "barryvdh/laravel-cors": "^0.11.0"
     },
     "require-dev": {
