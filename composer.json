@@ -18,8 +18,10 @@
         "php": ">=7.0.0",
         "composer/installers": "~1.0",
         "idavoll/core-module": "~3.0",
-        "laraplug/product-module": "dev-master",
-        "laraplug/attribute-module": "dev-master",
+        "laraplug/product-module": "0.*",
+        "laraplug/attribute-module": "0.*",
+        "laraplug/order-module": "0.*",
+        "laraplug/cart-module": "0.*",
         "barryvdh/laravel-cors": "^0.11.0"
     },
     "require-dev": {
