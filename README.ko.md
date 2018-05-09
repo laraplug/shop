@@ -14,7 +14,10 @@
 
 아래 모듈들이 함께 설치됩니다  
 [laraplug/product-module](https://github.com/laraplug/product-module)  
-[laraplug/attribute-module](https://github.com/laraplug/attribute-module)
+[laraplug/attribute-module](https://github.com/laraplug/attribute-module)  
+[laraplug/cart-module](https://github.com/laraplug/cart-module)  
+[laraplug/order-module](https://github.com/laraplug/order-module)  
+[laraplug/theme-module](https://github.com/laraplug/theme-module) (Deprecated)
 
 ## Table Of Contents
 

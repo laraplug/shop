@@ -12,8 +12,12 @@
 
 **Laraplug Shop** is a flexible, extendable e-commerce module, built on top of [AsgardCMS](https://github.com/AsgardCms/Platform) platform.
 
-Integrated with [laraplug/product-module](https://github.com/laraplug/product-module)
-and [laraplug/attribute-module](https://github.com/laraplug/attribute-module)
+Integrated with the modules below  
+[laraplug/product-module](https://github.com/laraplug/product-module)  
+[laraplug/attribute-module](https://github.com/laraplug/attribute-module)  
+[laraplug/cart-module](https://github.com/laraplug/cart-module)  
+[laraplug/order-module](https://github.com/laraplug/order-module)  
+[laraplug/theme-module](https://github.com/laraplug/theme-module) (Deprecated)
 
 ## Table Of Contents
 
@@ -37,14 +41,19 @@ and [laraplug/attribute-module](https://github.com/laraplug/attribute-module)
     ```shell
     php artisan module:migrate Attribute
     php artisan module:migrate Product
-    php artisan module:migrate Shop
+    php artisan module:migrate Cart
+    php artisan module:migrate Order --seed
+    php artisan module:migrate Shop --seed
     ```
 
 3. Execute publish via [AsgardCMS](https://github.com/AsgardCms/Platform)'s module command:
     ```shell
     php artisan module:publish Attribute
     php artisan module:publish Product
+    php artisan module:publish Cart
+    php artisan module:publish Order
     php artisan module:publish Shop
+
     ```
 
 4. Done!
