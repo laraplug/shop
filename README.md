@@ -5,6 +5,9 @@
 [![Total Downloads](https://poser.pugx.org/laraplug/shop/d/total.svg?format=flat-square)](https://packagist.org/packages/laraplug/shop)
 [![PHP7 Compatible](https://img.shields.io/badge/php-7-green.svg?style=flat-square)](https://packagist.org/packages/laraplug/shop)
 
+### This module is actively developing.
+### Need help! English Translation is incomplete. Any PR would be appreciated :)
+
 # Laraplug Shop
 
 **Laraplug Shop** is a flexible, extendable e-commerce module, built on top of [AsgardCMS](https://github.com/AsgardCms/Platform) platform.
