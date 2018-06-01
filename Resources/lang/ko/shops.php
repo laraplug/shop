@@ -7,6 +7,7 @@ return [
     'destroy resource' => '상점 삭제',
     'title' => [
         'shops' => '상점',
+        'manage shop' => '상점관리',
         'create shop' => '상점 생성',
         'edit shop' => '상점 수정',
         'shop info' => '상점정보',

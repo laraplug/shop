@@ -2,36 +2,27 @@
 
 namespace Modules\Shop\Providers;
 
-
-
 use Illuminate\Support\ServiceProvider;
 use Modules\Core\Events\BuildingSidebar;
 use Modules\Core\Events\LoadingBackendTranslations;
 use Modules\Core\Traits\CanPublishConfiguration;
-use Modules\Shop\Support\ProductHelper;
-use Modules\Shop\Support\CategoryHelper;
-use Modules\Shop\Support\CurrencyHelper;
-
-use Modules\Shop\Repositories\PaymentMethodManager;
-use Modules\Shop\Repositories\PaymentGatewayManager;
-use Modules\Shop\Repositories\ShippingMethodManager;
-use Modules\Shop\Repositories\ShippingGatewayManager;
-
 use Modules\Media\Image\ThumbnailManager;
-
 use Modules\Shop\Events\Handlers\RegisterShopSidebar;
 use Modules\Shop\Http\Middleware\ShopDomainResolver;
-use Modules\Shop\Support\ShopHelper;
-
+use Modules\Shop\Payments\Gateways\DirectPayGateway;
+use Modules\Shop\Payments\Gateways\NicepayGateway;
 use Modules\Shop\Payments\Methods\Card;
 use Modules\Shop\Payments\Methods\DirectBank;
-
-use Modules\Shop\Payments\Gateways\NicepayGateway;
-use Modules\Shop\Payments\Gateways\DirectPayGateway;
-
-use Modules\Shop\Shippings\Methods\Pickup;
-
+use Modules\Shop\Repositories\PaymentGatewayManager;
+use Modules\Shop\Repositories\PaymentMethodManager;
+use Modules\Shop\Repositories\ShippingGatewayManager;
+use Modules\Shop\Repositories\ShippingMethodManager;
 use Modules\Shop\Shippings\Gateways\DirectShippingGateway;
+use Modules\Shop\Shippings\Methods\Pickup;
+use Modules\Shop\Support\CategoryHelper;
+use Modules\Shop\Support\CurrencyHelper;
+use Modules\Shop\Support\ProductHelper;
+use Modules\Shop\Support\ShopHelper;
 
 class ShopServiceProvider extends ServiceProvider
 {
@@ -64,7 +55,6 @@ class ShopServiceProvider extends ServiceProvider
             $event->load('shops', array_dot(trans('shop::shops')));
             $event->load('currencies', array_dot(trans('shop::currencies')));
             // append translations
-
         });
     }
 
@@ -73,6 +63,7 @@ class ShopServiceProvider extends ServiceProvider
         $this->registerMiddleware();
         $this->registerThumbnails();
 
+        $this->publishConfig('shop', 'config');
         $this->publishConfig('shop', 'permissions');
 
         // Set sidebar-group of attribute as shop
@@ -169,8 +160,7 @@ class ShopServiceProvider extends ServiceProvider
             }
         );
 
-// add bindings
-
+        // add bindings
     }
 
     private function registerThumbnails()
