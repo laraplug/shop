@@ -2,6 +2,8 @@
 
 namespace Modules\Shop\Contracts;
 
+use Illuminate\Support\Collection;
+
 /**
  * 장바구니 & 주문 아이템 인터페이스
  * Cart & Order Item interface
@@ -30,13 +32,6 @@ interface ShopItemInterface
      * @return string
      */
     public function getQuantityAttribute();
-
-    /**
-     * Returns selected options.
-     *
-     * @return mixed
-     */
-    public function getOptionsAttribute();
 
     /**
      * Returns total
