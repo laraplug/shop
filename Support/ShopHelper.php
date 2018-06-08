@@ -153,7 +153,7 @@ class ShopHelper
 
         // Save order data
         $order = $this->order->create($data);
-        
+
         // Set initial status of gateway
         $order->status_id = $order->payment_gateway->getInitialStatusId();
         $order->save();
@@ -248,18 +248,19 @@ class ShopHelper
      * 상품옵션값 이름 가져오기
      * Get Product OptionValue's name
      * @param ShopProductOptionInterface $option
+     * @param mixed                      $value
      * @return string
      */
-    public function getOptionValueName(ShopProductOptionInterface $option): string
+    public function getOptionValueName(ShopProductOptionInterface $option, $value): string
     {
         if (!$option['is_collection']) {
-            return $option['value'];
+            return $value;
         }
 
         // If collection value, stored value is code
-        foreach ($option['values'] as $value) {
-            if ($value['code'] == $option['value']) {
-                return $value['name'];
+        foreach ($option['values'] as $v) {
+            if ($v['code'] == $value) {
+                return $v['name'];
             }
         }
     }
