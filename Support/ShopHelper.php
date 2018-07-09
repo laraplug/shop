@@ -253,6 +253,9 @@ class ShopHelper
      */
     public function getOptionValueName(ShopProductOptionInterface $option, $value): string
     {
+        // 없으면 기본값 string
+        $value = $value ?: '';
+
         if (!$option['is_collection']) {
             return $value;
         }
