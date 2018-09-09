@@ -25,6 +25,16 @@ $router->group(['middleware' => ['domain.shop']], function($router) {
         'uses' => 'ProductController@detail'
     ]);
 
+    $router->get('/article', [
+        'as' => 'shop.article.index',
+        'uses' => 'ArticleController@articles'
+    ]);
+
+    $router->get('/article/{article}', [
+        'as' => 'shop.article.view',
+        'uses' => 'ArticleController@articleView'
+    ]);
+
     // Cart View
     $router->get('/cart', [
         'as' => 'shop.cart',

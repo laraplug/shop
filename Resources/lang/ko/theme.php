@@ -74,6 +74,10 @@ return [
           'title' => '장바구니',
           'description' => '장바구니에 담긴 상품 보기',
       ],
+      'article' => [
+          'title' => '게시판',
+          'description' => '공지사항 확인하기',
+      ],
       'order_checkout' => [
           'title' => '주문정보',
           'description' => '장바구니에 담긴 상품 결제하기',
