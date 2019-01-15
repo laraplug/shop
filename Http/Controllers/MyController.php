@@ -88,6 +88,42 @@ class MyController extends BasePublicController
     }
 
     /**
+     * 주문 거래명세어
+     * Order Form
+     *
+     * @param  Order $order
+     * @param  Request $request
+     * @return \Illuminate\View\View
+     */
+    public function orderForm(Order $order, Request $request)
+    {
+        $user = $this->auth->user();
+        $user->load('profile');
+
+        $items = collect();
+        $order->items->map(function($item) use ($items) {
+            $product_name = $item->product->name;
+
+            if($items->count() > 0) {
+              $items->map(function($item2) use ($items, $item, $product_name) {
+                if($item2[$product_name]) {
+                  $item2[$product_name]->quantity = $item2[$product_name]->quantity + $item->quantity;
+                  $item2[$product_name]->total = $item2[$product_name]->total + $item->total;
+                }
+                else {
+                  $items->push([$product_name => $item]);
+                }
+              });
+            }
+            else {
+              $items->push([$product_name => $item]);
+            }
+        });
+
+        return view('shop.my.order.form', compact('user', 'order', 'items'));
+    }
+
+    /**
      * 프로필
      * Profile
      *

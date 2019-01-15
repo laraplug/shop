@@ -101,6 +101,13 @@ $router->group(['middleware' => ['domain.shop']], function($router) {
             'uses' => 'MyController@orderView'
         ]);
 
+        // 마이페이지 - 주문 거래명세서
+        // Order Form
+        $router->get('/my/orders/form/{order}', [
+            'as' => 'shop.my.order.form',
+            'uses' => 'MyController@orderForm'
+        ]);
+
         // 프로필
         // Profile
         $router->get('/my/profile', [
