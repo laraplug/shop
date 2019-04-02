@@ -100,23 +100,38 @@ class MyController extends BasePublicController
         $user = $this->auth->user();
         $user->load('profile');
 
+        $degreeCount = 0;
+        // dd($order->items);
+
         $items = collect();
-        $order->items->map(function($item) use ($items) {
+        $order->items->map(function($item) use ($items, $degreeCount) {
             $product_name = $item->product->name;
 
             if($items->count() > 0) {
-              $items->map(function($item2) use ($items, $item, $product_name) {
-                if($item2[$product_name]) {
-                  $item2[$product_name]->quantity = $item2[$product_name]->quantity + $item->quantity;
-                  $item2[$product_name]->total = $item2[$product_name]->total + $item->total;
+                $items->map(function($item2) use ($items, $item, $product_name) {
+
+                // 학사관리 항목이라면 카운트 추가
+                if($item->product_id == 1) {
+                  $item2['글로벌학사관리교육활동과정']->quantity = $item2['글로벌학사관리교육활동과정']->quantity + 1;
                 }
                 else {
-                  $items->push([$product_name => $item]);
+                    if(isset($item2[$product_name])) {
+                        $item2[$product_name]->quantity = $item2[$product_name]->quantity + $item->quantity;
+                        $item2[$product_name]->total = $item2[$product_name]->total + $item->total;
+                    }
+                    else {
+                        // 학사북 번들이라면 번들은 카운트하지 않기
+                        if($item->product_id == 2) $item->quantity = 0;
+                        $items->push([$product_name => $item]);
+                    }
                 }
+
               });
             }
             else {
-              $items->push([$product_name => $item]);
+                // 학사북 번들이라면 번들은 카운트하지 않기
+                if($item->product_id == 2) $item->quantity = 0;
+                $items->push([$product_name => $item]);
             }
         });
 
