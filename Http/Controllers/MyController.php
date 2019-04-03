@@ -84,6 +84,8 @@ class MyController extends BasePublicController
         $user = $this->auth->user();
         $user->load('profile');
 
+        $order->transaction = $order->transactions->first();
+
         return view('shop.my.order.view', compact('user', 'order'));
     }
 
