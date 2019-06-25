@@ -124,11 +124,11 @@ interface ShopOrderInterface
     public function getTotalAttribute();
 
     /**
-     * Returns small thumnail url
+     * Returns medium thumnail url
      *
      * @return float
      */
-    public function getSmallThumbAttribute();
+    public function getMediumThumbAttribute();
 
     /**
      * Returns status code of order
