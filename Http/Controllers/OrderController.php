@@ -44,6 +44,7 @@ class OrderController extends BasePublicController
     public function createFromCart(Request $request)
     {
         $user = Auth::user()->load('profile');
+        //임시삭제
         if ($order = Order::scopeByUser($user->id, OrderStatus::PENDING_PAYMENT)->first()) {
             return redirect()->route('shop.order.pay.view', $order->id)->with('warning', trans('shop::payments.messages.payment pending order exists'));
         }
@@ -53,7 +54,6 @@ class OrderController extends BasePublicController
         $items = Cart::items();
         $totalShipping = Cart::getTotalShipping();
         $totalPrice = Cart::getTotalPrice();
-
         return view('shop.order.checkout', compact('items', 'totalShipping', 'totalPrice', 'user'));
     }
 
@@ -70,6 +70,7 @@ class OrderController extends BasePublicController
             return redirect()->route('shop.cart')->with('warning', trans('shop::theme.cart is empty'));
         }
         $data = $request->all();
+
         // 주문정보와 다른 배송지를 사용하지 않으면
         if (empty($data['shipping_different_address'])) {
             $data['shipping_name'] = $data['payment_name'];
@@ -78,6 +79,12 @@ class OrderController extends BasePublicController
             $data['shipping_address_detail'] = $data['payment_address_detail'];
             $data['shipping_email'] = $data['payment_email'];
             $data['shipping_phone'] = $data['payment_phone'];
+        }
+        // 무통장선택 후 현금영수증 번호 입력했을때 shipping_phone 에 추가
+        if(!empty($data['receipt_phone'])){
+          $shipping_phone = $data['shipping_phone'];
+          $recepit_phone = $data['receipt_phone'];
+          $data['shipping_phone'] = $shipping_phone."/".$recepit_phone;
         }
         // 결제게이트웨이ID & 결제수단ID 파싱
         list($paymentGatewayId, $paymentMethodId) = explode('|', $request->payment_gateway_method);
@@ -88,10 +95,9 @@ class OrderController extends BasePublicController
         // If order placing succeed
         if ($order = Cart::placeOrder($data)) {
             Cart::flush();
-
+            //dd
             return redirect()->route('shop.order.pay.view', $order->id);
         }
-
         // If order placing failed
         return redirect()->back()->withError('Order Failed');
     }
@@ -107,7 +113,6 @@ class OrderController extends BasePublicController
     public function payForm(Order $order, Request $request)
     {
         $user = Auth::user()->load('profile');
-
         // 결제승인 대기중인 주문이면
         // If watiting for approval
         if ($order->status_id == OrderStatus::PENDING_PAYMENT_APPROVAL) {
@@ -118,7 +123,6 @@ class OrderController extends BasePublicController
         // Get Gateway View
         $gatewayView = $order->payment_gateway->preparePayment(route('shop.order.pay.store', $order->id));
         $payButtonOnClick = $order->payment_gateway->getPayButtonOnClick();
-
         return view('shop.order.pay', compact('order', 'user', 'gatewayView', 'payButtonOnClick'));
     }
 

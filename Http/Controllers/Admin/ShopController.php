@@ -49,7 +49,7 @@ class ShopController extends AdminBaseController
      * @return Response
      */
     public function create()
-    {
+    { 
         $themes = $this->themeManager->allPublicThemes();
         return view('shop::admin.shops.create', compact('themes'));
     }

@@ -137,7 +137,6 @@ class ShopHelper
         if (!$user) {
             return false;
         }
-
         $data['shop_id'] = $this->shop->id;
         $data['user_id'] = $user->id;
 
@@ -153,7 +152,6 @@ class ShopHelper
 
         // Save order data
         $order = $this->order->create($data);
-
         // Set initial status of gateway
         $order->status_id = $order->payment_gateway->getInitialStatusId();
         $order->save();
