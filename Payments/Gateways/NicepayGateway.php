@@ -163,6 +163,15 @@ class NicepayGateway extends PaymentGateway
                 <!-- 변경 불가 -->
                 <input type="hidden" name="EdiDate" value="{$this->api->m_EdiDate}" />
                 <input type="hidden" name="EncryptData" value="$hashString" />
+                <!-- 면세관련 설정 (1617 오류 해결) -->
+                <!-- 필드명:SupplyAmt / 사이즈:12 / 설명:공급가 액 -->
+                <input type="hidden" name="SupplyAmt" value="{$this->api->m_Price}">
+                <!-- 필드명:GoodsVat / 사이즈:12 / 설명:부가가 치세 -->
+                <input type="hidden" name="GoodsVat" value="0">
+                <!-- 필드명:ServiceAmt / 사이즈:12 / 설명:봉사료 -->
+                <input type="hidden" name="ServiceAmt" value="0">
+                <!-- 필드명:TaxFreeAmt / 사이즈:12 / 설명:면세 금액 -->
+                <input type="hidden" name="TaxFreeAmt" value="0">
             </form>
 HTML;
         }
@@ -208,6 +217,15 @@ HTML;
                 <input type="hidden" name="EdiDate" value="{$this->api->m_EdiDate}" />
                 <input type="hidden" name="EncryptData" value="$hashString" />
                 <input type="hidden" name="TrKey" value="" />
+                <!-- 면세관련 설정 (1617 오류 해결) -->
+                <!-- 필드명:SupplyAmt / 사이즈:12 / 설명:공급가 액 -->
+                <input type="hidden" name="SupplyAmt" value="{$this->api->m_Price}">
+                <!-- 필드명:GoodsVat / 사이즈:12 / 설명:부가가 치세 -->
+                <input type="hidden" name="GoodsVat" value="0">
+                <!-- 필드명:ServiceAmt / 사이즈:12 / 설명:봉사료 -->
+                <input type="hidden" name="ServiceAmt" value="0">
+                <!-- 필드명:TaxFreeAmt / 사이즈:12 / 설명:면세 금액 -->
+                <input type="hidden" name="TaxFreeAmt" value="0">
             </form>
 HTML;
         }
@@ -285,7 +303,7 @@ HTML;
         if ($data['PayMethod'] == "CARD") {
             // 신용카드(정상 결과코드:3001)
             if ($resultCode !== "3001") {
-                throw new GatewayException(']카드결제 에러: ' . $this->message, 0);
+                throw new GatewayException('카드결제 에러: ' . $this->message, 0);
             }
 
             $bankName = $this->api->m_ResultData["CardName"];
