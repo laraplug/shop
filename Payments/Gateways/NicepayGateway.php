@@ -285,7 +285,7 @@ HTML;
         if ($data['PayMethod'] == "CARD") {
             // 신용카드(정상 결과코드:3001)
             if ($resultCode !== "3001") {
-                throw new GatewayException('카드결제 에러: ' . $this->message, 0);
+                throw new GatewayException(']카드결제 에러: ' . $this->message, 0);
             }
 
             $bankName = $this->api->m_ResultData["CardName"];
