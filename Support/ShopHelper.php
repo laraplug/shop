@@ -264,5 +264,6 @@ class ShopHelper
                 return $v['name'] ?: '';
             }
         }
+        return '';
     }
 }
