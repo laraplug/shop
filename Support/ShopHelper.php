@@ -261,7 +261,7 @@ class ShopHelper
         // If collection value, stored value is code
         foreach ($option['values'] as $v) {
             if ($v['code'] == $value) {
-                return $v['name'];
+                return $v['name'] ?: '';
             }
         }
     }
