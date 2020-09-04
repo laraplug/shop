@@ -35,6 +35,10 @@ class NicepayLite
 	var $m_VBankExpDate;		// 가상계좌 입금 마감일
 	var $m_MerchantServerIp;	// 상점 서버 아이피
 	var $m_UserIp;				// 구매자 아이피
+//	세금관련 파라미터 추가 (NicepayGateway name 값으로 변수 지적)20200904 Ho
+	var $m_SupplyAmt;			//공급가
+	var $m_GoodsVat;			//부가가치세=tax
+	var $m_TaxFreeAmt;			//
 
 	// resultPage Parameter
 	var $m_GoodsName;			// 상품명

@@ -148,8 +148,21 @@ class ShopHelper
 
         $data['status_id'] = OrderStatus::PENDING_PAYMENT;
 
+//        items 에도 부가가치세 정보를 넣어주기 위해 foreach로 돌린다 20200904 Ho
+        foreach ($items as $item){
+            $item->total = $item->price;
+            if($item->product['tax_free']){
+                $item->tax_free = $item->price;
+                $item->price = 0;
+            }else{
+                $totalPrice = $item->price;
+                $price = floor($totalPrice/1.1);
+                $tax = $totalPrice - $price;
+                $item->price = $price;
+                $item->tax = $tax;
+            }
+        }
         $data['items'] = $items;
-
         // Save order data
         $order = $this->order->create($data);
         // Set initial status of gateway
@@ -202,7 +215,9 @@ class ShopHelper
     public function calculateUnitPrice(ShopItemInterface $item)
     {
         $salePrice = (int) $item['product']['sale_price'];
+
         $unitPrice = $salePrice;
+
         if (!empty($item['options'])) {
             foreach ($item['options'] as $option) {
                 if (!$option->is_collection) {
@@ -220,7 +235,6 @@ class ShopHelper
                 }
             }
         }
-
         return $unitPrice;
     }
 
@@ -235,13 +249,51 @@ class ShopHelper
         $totalPrice = 0;
         foreach ($items as $item) {
             $unitPrice = $this->calculateUnitPrice($item);
+
+        //면세일경우 unitPrice는 0이되고, 아닐경우는 부가세 제외하고 적용 20200903 Ho
+            $unitPrice = ($item['product']['tax_free'])? 0:$unitPrice/1.1;
+
             $quantity = (int) $item['quantity'];
             $totalPrice += $unitPrice * $quantity;
         }
 
-        return $totalPrice;
+        return floor($totalPrice);
+    }
+    //총 금액에서 공급가를 빼서 부가가치세를 계산 20200903 Ho
+
+    /**
+     * @param $items
+     * @param $totalPrice
+     * @return float|int
+     */
+    public function calculateTax($items){
+        $totalPrice = $this->calculateTotalPrice($items);
+        $total = 0;
+
+        foreach ($items as $item) {
+            if($item->product['tax_free']){
+                continue;
+            }
+            $unitPrice = $item->price;
+            $quantity = (int) $item['quantity'];
+            $total += $unitPrice * $quantity;
+        }
+        return $totalTax = $total - $totalPrice;
+
     }
 
+    public function calculateTaxFree($items){
+        $totalTaxFree = 0;
+        foreach ($items as $item) {
+            if($item->product['tax_free']){
+                $taxFree = $item->price;
+                $quantity = (int) $item['quantity'];
+                $totalTaxFree += $taxFree * $quantity;
+
+            }
+        }
+        return $totalTaxFree;
+    }
     /**
      * 상품옵션값 이름 가져오기
      * Get Product OptionValue's name
