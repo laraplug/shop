@@ -114,9 +114,9 @@ class NicepayGateway extends PaymentGateway
         $this->api->m_Moid = $this->order->id;
         $this->api->m_Price = $this->order->total;
 //        세금관련 파라미터 추가 20200904 Ho
-        $this->api->m_SupplyAmt = $this->order->total_price; //공급가
-        $this->api->m_GoodsVat = $this->order->total_tax; //부가가치세
-        $this->api->m_TaxFreeAmt = $this->order->total_tax_free;//면세금액
+        $this->api->m_SupplyAmt = $this->order->total_supply_amount; //공급가
+        $this->api->m_GoodsVat = $this->order->total_tax_amount; //부가가치세
+        $this->api->m_TaxFreeAmt = $this->order->total_tax_free_amount;//면세금액
 
         $this->api->m_BuyerEmail = $this->order->payment_email;
         $this->api->m_BuyerName = $this->order->payment_name;

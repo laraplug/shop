@@ -55,10 +55,7 @@ class OrderController extends BasePublicController
         $items = Cart::items();
         $totalShipping = Cart::getTotalShipping();
         $totalPrice = Cart::getTotalPrice();
-//        과세부분용 세금추가 20200903 Ho
-        $totalTax = Cart::getTotalTax();
-        $totalTaxFree = Cart::getTotalTaxFree();
-        return view('shop.order.checkout', compact('items', 'totalShipping', 'totalPrice', 'user','totalTax','totalTaxFree'));
+        return view('shop.order.checkout', compact('items', 'totalShipping', 'totalPrice', 'user'));
     }
 
     /**
