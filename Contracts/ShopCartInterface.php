@@ -87,7 +87,7 @@ interface ShopCartInterface
      *
      * @return float
      */
-    public function getTotalTax($data);
+    public function getTotalTax();
 
     /**
      * Returns total discount amount based on all coupons applied.
