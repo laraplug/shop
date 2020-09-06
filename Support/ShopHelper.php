@@ -243,34 +243,6 @@ class ShopHelper
         return $totalPrice;
     }
 
-    /**세금 관련 부분(공급가, 부가가치세, 면세)를 계산합니다. 20200905 Ho
-     * @param $items
-     * @param $totalPrice
-     * @return float|int
-     */
-    public function calculateTotalTax($items,$data){
-        $totalTaxFreeAmount = 0;//면세금액
-        $totalSupplyAmount = 0;//공급가
-        $totalTaxAmount = 0;//부가가치세(세금)
-        foreach ($items as $item){
-            $unitPrice = $this->calculateUnitPrice($item);
-            $quantity = (int) $item['quantity'];
-            //taxFree 일 경우 면세에만 입력해줌
-            if($item['product']['is_tax_free']){
-                $totalTaxFreeAmount += $unitPrice*$quantity;
-            }else{
-                $unitSupplyAmount = floor(($unitPrice * $quantity)/1.1);
-                $totalSupplyAmount += $unitSupplyAmount;
-                $totalTaxAmount += ($unitPrice * $quantity)-$unitSupplyAmount;
-            }
-        }
-
-        $data['total_tax_free_amount'] = $totalTaxFreeAmount;
-        $data['total_supply_amount'] = $totalSupplyAmount;
-        $data['total_tax_amount'] = $totalTaxAmount;
-        return $data;
-    }
-
 
     /**
      * 상품옵션값 이름 가져오기
