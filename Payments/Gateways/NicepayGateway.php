@@ -113,6 +113,11 @@ class NicepayGateway extends PaymentGateway
         $this->api->m_MID = $this->merchantId;
         $this->api->m_Moid = $this->order->id;
         $this->api->m_Price = $this->order->total;
+//        세금관련 파라미터 추가 20200904 Ho
+        $this->api->m_SupplyAmt = $this->order->total_supply_amount; //공급가
+        $this->api->m_GoodsVat = $this->order->total_tax_amount; //부가가치세
+        $this->api->m_TaxFreeAmt = $this->order->total_tax_free_amount;//면세금액
+
         $this->api->m_BuyerEmail = $this->order->payment_email;
         $this->api->m_BuyerName = $this->order->payment_name;
         $this->api->m_BuyerTel = $this->order->payment_phone;
@@ -125,9 +130,7 @@ class NicepayGateway extends PaymentGateway
         // 전송타입
         $transType = $this->getOptionValue('TransType');
         $goodsCl = $this->getOptionValue('GoodsCl');
-
         $this->api->requestProcess();
-
         // 모바일결제
         if(Agent::isMobile()) {
             $this->payButtonOnClick = 'goPay()';
@@ -165,13 +168,13 @@ class NicepayGateway extends PaymentGateway
                 <input type="hidden" name="EncryptData" value="$hashString" />
                 <!-- 면세관련 설정 (1617 오류 해결) -->
                 <!-- 필드명:SupplyAmt / 사이즈:12 / 설명:공급가 액 -->
-                <input type="hidden" name="SupplyAmt" value="{$this->api->m_Price}">
+                <input type="hidden" name="SupplyAmt" value="{$this->api->m_SupplyAmt}">
                 <!-- 필드명:GoodsVat / 사이즈:12 / 설명:부가가 치세 -->
-                <input type="hidden" name="GoodsVat" value="0">
+                <input type="hidden" name="GoodsVat" value="{$this->api->m_GoodsVat}">
                 <!-- 필드명:ServiceAmt / 사이즈:12 / 설명:봉사료 -->
                 <input type="hidden" name="ServiceAmt" value="0">
                 <!-- 필드명:TaxFreeAmt / 사이즈:12 / 설명:면세 금액 -->
-                <input type="hidden" name="TaxFreeAmt" value="0">
+                <input type="hidden" name="TaxFreeAmt" value="{$this->api->m_TaxFreeAmt}">
             </form>
 HTML;
         }
@@ -219,13 +222,13 @@ HTML;
                 <input type="hidden" name="TrKey" value="" />
                 <!-- 면세관련 설정 (1617 오류 해결) -->
                 <!-- 필드명:SupplyAmt / 사이즈:12 / 설명:공급가 액 -->
-                <input type="hidden" name="SupplyAmt" value="{$this->api->m_Price}">
+                <input type="hidden" name="SupplyAmt" value="{$this->api->m_SupplyAmt}">
                 <!-- 필드명:GoodsVat / 사이즈:12 / 설명:부가가 치세 -->
-                <input type="hidden" name="GoodsVat" value="0">
+                <input type="hidden" name="GoodsVat" value="{$this->api->m_GoodsVat}">
                 <!-- 필드명:ServiceAmt / 사이즈:12 / 설명:봉사료 -->
                 <input type="hidden" name="ServiceAmt" value="0">
                 <!-- 필드명:TaxFreeAmt / 사이즈:12 / 설명:면세 금액 -->
-                <input type="hidden" name="TaxFreeAmt" value="0">
+                <input type="hidden" name="TaxFreeAmt" value="{$this->api->m_TaxFreeAmt}">
             </form>
 HTML;
         }

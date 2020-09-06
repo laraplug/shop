@@ -45,6 +45,7 @@ class OrderController extends BasePublicController
     {
         $user = Auth::user()->load('profile');
         //임시삭제
+//        TODO 가끔식 orderstatus 가 1(PENDING_PAYMENT)인 order 가 생성되어 결제버튼을 눌러도 변경이 안되는 부분이 있습니다. 재현해보려고 하였으나 진행이 안되어 남깁니다.
         if ($order = Order::scopeByUser($user->id, OrderStatus::PENDING_PAYMENT)->first()) {
             return redirect()->route('shop.order.pay.view', $order->id)->with('warning', trans('shop::payments.messages.payment pending order exists'));
         }
@@ -70,7 +71,6 @@ class OrderController extends BasePublicController
             return redirect()->route('shop.cart')->with('warning', trans('shop::theme.cart is empty'));
         }
         $data = $request->all();
-
         // 주문정보와 다른 배송지를 사용하지 않으면
         if (empty($data['shipping_different_address'])) {
             $data['shipping_name'] = $data['payment_name'];
@@ -95,7 +95,6 @@ class OrderController extends BasePublicController
         // If order placing succeed
         if ($order = Cart::placeOrder($data)) {
             Cart::flush();
-            //dd
             return redirect()->route('shop.order.pay.view', $order->id);
         }
         // If order placing failed

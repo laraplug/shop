@@ -83,7 +83,7 @@ interface ShopCartInterface
     public function getTotalPrice();
 
     /**
-     * Returns total tax of all the items in cart.
+     * 세금 관련된 부분을 입력해 주는 함수 20200905 Ho
      *
      * @return float
      */

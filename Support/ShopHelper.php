@@ -149,7 +149,6 @@ class ShopHelper
         $data['status_id'] = OrderStatus::PENDING_PAYMENT;
 
         $data['items'] = $items;
-
         // Save order data
         $order = $this->order->create($data);
         // Set initial status of gateway
@@ -202,7 +201,9 @@ class ShopHelper
     public function calculateUnitPrice(ShopItemInterface $item)
     {
         $salePrice = (int) $item['product']['sale_price'];
+
         $unitPrice = $salePrice;
+
         if (!empty($item['options'])) {
             foreach ($item['options'] as $option) {
                 if (!$option->is_collection) {
@@ -220,7 +221,6 @@ class ShopHelper
                 }
             }
         }
-
         return $unitPrice;
     }
 
@@ -235,12 +235,14 @@ class ShopHelper
         $totalPrice = 0;
         foreach ($items as $item) {
             $unitPrice = $this->calculateUnitPrice($item);
+
             $quantity = (int) $item['quantity'];
             $totalPrice += $unitPrice * $quantity;
         }
 
         return $totalPrice;
     }
+
 
     /**
      * 상품옵션값 이름 가져오기
