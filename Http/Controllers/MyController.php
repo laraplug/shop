@@ -3,6 +3,7 @@
 namespace Modules\Shop\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Modules\Academy\Entities\Academy;
 use Modules\User\Contracts\Authentication;
 use Modules\User\Repositories\UserRepository;
 
@@ -149,7 +150,8 @@ class MyController extends BasePublicController
     {
         $user = $this->auth->user();
         $user->load('profile');
-        return view('shop.my.profile', compact('user'));
+        $academies = Academy::get();
+        return view('shop.my.profile', compact('user','academies'));
     }
 
     /**
@@ -163,8 +165,15 @@ class MyController extends BasePublicController
    {
        $data = $request->all();
        $user = $this->auth->user();
+       if(isset($data['student_academies'])){
+           $data['profile']['student_academies'] = json_encode($data['student_academies']);
+           $data['profile']['student_names'] = json_encode($data['student_names']);
+       }else{
+           $data['profile']['student_academies'] = json_encode([]);
+           $data['profile']['student_names'] = json_encode([]);
+       }
 
-       $this->user->update($user, $request->all());
+       $this->user->update($user, $data);
 
        return redirect()->route('shop.my.profile')->with('success', trans('shop::theme.profile saved'));
    }
