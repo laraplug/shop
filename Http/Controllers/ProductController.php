@@ -2,6 +2,7 @@
 
 namespace Modules\Shop\Http\Controllers;
 
+
 use Illuminate\Support\Collection;
 use Modules\Shop\Facades\Category as CategoryFacade;
 use Modules\Product\Entities\Product;
@@ -66,7 +67,16 @@ class ProductController extends BasePublicController
     public function detail(Product $product)
     {
         $routeCategories = CategoryFacade::getWithAncestors($product->category);
-        return view('shop.product.detail', compact('product', 'routeCategories'));
+        $recommendStudents = null;
+        $recommendAcademies = null;
+        //원생 추천용 Profile 추가
+        if($this->auth->user()){
+            $profile = $this->auth->user()->load('profile');
+            $recommendStudents = json_decode($profile->profile->student_names);
+            $recommendAcademies = json_decode($profile->profile->student_academies);
+        }
+
+        return view('shop.product.detail', compact('product', 'routeCategories','recommendStudents','recommendAcademies'));
     }
 
 }
