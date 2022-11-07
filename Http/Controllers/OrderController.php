@@ -201,4 +201,25 @@ class OrderController extends BasePublicController
 
         return redirect()->back()->withError(trans('shop::payments.messages.cannot cancel'));
     }
+
+    /***
+     * @param Order $order
+     * @param Request $request
+     * @return mixed
+     */
+    public function enrePayForm()
+    {
+//        $user = Auth::user()->load('profile');
+//        // 결제승인 대기중인 주문이면
+//        // If watiting for approval
+//        if ($order->status_id == OrderStatus::PENDING_PAYMENT_APPROVAL) {
+//            return redirect()->route('shop.my.order.view', $order->id)->with('warning', trans('shop::payments.messages.waiting for approval'));
+//        }
+//
+//        // 결제 게이트웨이에서 제공하는 뷰
+//        // Get Gateway View
+//        $gatewayView = $order->payment_gateway->preparePayment(route('shop.order.pay.store', $order->id));
+//        $payButtonOnClick = $order->payment_gateway->getPayButtonOnClick();
+        return view('shop.order.enrePay');
+    }
 }
