@@ -199,7 +199,7 @@ HTML;
             }
             </script>
             <form name="payForm" method="post" action="$callbackUrl">
-                {$csrf_field}
+                {$csrf_field} 
                 <!-- 정보 -->
                 <input type="hidden" name="PayMethod" value="$paymentMethod" />
                 <input type="hidden" name="GoodsName" value="{$this->api->m_GoodsName}" />

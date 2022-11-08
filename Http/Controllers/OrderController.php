@@ -215,7 +215,8 @@ class OrderController extends BasePublicController
 //        }
 //
 //        // 결제 게이트웨이에서 제공하는 뷰
-//        // Get Gateway View
+//        // Get Gateway Viewa
+
 //        $gatewayView = $order->payment_gateway->preparePayment(route('shop.order.pay.store', $order->id));
 //        $payButtonOnClick = $order->payment_gateway->getPayButtonOnClick();
         return view('shop.order.enrePay',compact($request));
