@@ -203,11 +203,9 @@ class OrderController extends BasePublicController
     }
 
     /***
-     * @param Order $order
-     * @param Request $request
      * @return mixed
      */
-    public function enrePayForm()
+    public function enrePayForm(Request $request)
     {
 //        $user = Auth::user()->load('profile');
 //        // 결제승인 대기중인 주문이면
@@ -220,6 +218,6 @@ class OrderController extends BasePublicController
 //        // Get Gateway View
 //        $gatewayView = $order->payment_gateway->preparePayment(route('shop.order.pay.store', $order->id));
 //        $payButtonOnClick = $order->payment_gateway->getPayButtonOnClick();
-        return view('shop.order.enrePay');
+        return view('shop.order.enrePay',compact($request));
     }
 }
