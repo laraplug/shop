@@ -126,5 +126,10 @@ $router->group(['middleware' => ['domain.shop']], function($router) {
         'as' => 'shop.order.enrePay.view',
         'uses' => 'OrderController@enrePayForm'
     ]);
+    $router->post('/enreutilitymall/orders/pay',[
+        'as' => 'shop.order.enrePay.store',
+        'uses' => 'OrderController@enrePay'
+    ]);
+
 
 });

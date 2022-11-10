@@ -207,6 +207,7 @@ class OrderController extends BasePublicController
      */
     public function enrePayForm(Request $request)
     {
+
 //        $user = Auth::user()->load('profile');
 //        // 결제승인 대기중인 주문이면
 //        // If watiting for approval
@@ -220,5 +221,24 @@ class OrderController extends BasePublicController
 //        $gatewayView = $order->payment_gateway->preparePayment(route('shop.order.pay.store', $order->id));
 //        $payButtonOnClick = $order->payment_gateway->getPayButtonOnClick();
         return view('shop.order.enrePay',compact('request'));
+    }
+    public function enrePay( Request $request)
+    {
+        $error = '';
+        try {
+
+            // 결제 성공하면
+            // If pay succeed
+
+            return redirect()->route('shop.order.enrePayEnd');
+        } catch (GatewayException $e) {
+            $error = $e->getMessage();
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+        }
+
+        // 결제에 실패하면
+        // If pay failed
+        return redirect()->back()->withError($error);
     }
 }
