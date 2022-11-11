@@ -203,42 +203,22 @@ class OrderController extends BasePublicController
     }
 
     /***
+     * enrePay 첫 실행히 보이는 뷰화면
      * @return mixed
      */
-    public function enrePayForm(Request $request)
+    public function enrePayView(Request $request)
     {
-
-//        $user = Auth::user()->load('profile');
-//        // 결제승인 대기중인 주문이면
-//        // If watiting for approval
-//        if ($order->status_id == OrderStatus::PENDING_PAYMENT_APPROVAL) {
-//            return redirect()->route('shop.my.order.view', $order->id)->with('warning', trans('shop::payments.messages.waiting for approval'));
-//        }
-//
-//        // 결제 게이트웨이에서 제공하는 뷰
-//        // Get Gateway Viewa
-
-//        $gatewayView = $order->payment_gateway->preparePayment(route('shop.order.pay.store', $order->id));
-//        $payButtonOnClick = $order->payment_gateway->getPayButtonOnClick();
         return view('shop.order.enrePay',compact('request'));
     }
-    public function enrePay( Request $request)
+    /***
+     * enrePay order 생성
+     * @param Request $request
+     * @return mixed
+     */
+    public function enrePay(Request $request)
     {
-        $error = '';
-        try {
 
-            // 결제 성공하면
-            // If pay succeed
-
-            return redirect()->route('shop.order.enrePayEnd');
-        } catch (GatewayException $e) {
-            $error = $e->getMessage();
-        } catch (Exception $e) {
-            $error = $e->getMessage();
-        }
-
-        // 결제에 실패하면
-        // If pay failed
-        return redirect()->back()->withError($error);
     }
+
+
 }

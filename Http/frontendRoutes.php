@@ -122,14 +122,15 @@ $router->group(['middleware' => ['domain.shop']], function($router) {
 
     });
 //    enreUtilityMall 용 route
-    $router->get('/enreutilitymall/orders/pay',[
+    //첫 View 페이지 생성
+    $router->get('/enreutilitymall/order/pay',[
         'as' => 'shop.order.enrePay.view',
-        'uses' => 'OrderController@enrePayForm'
+        'uses' => 'OrderController@enrePayView'
     ]);
-    $router->post('/enreutilitymall/orders/pay',[
-        'as' => 'shop.order.enrePay.store',
-        'uses' => 'OrderController@enrePay'
+    //enreOrder 저장
+    $router->post('/enreutilitymall/order/pay', [
+        'as' => 'shop.checkout.EnRecart.store',
+        'uses' => 'OrderController@storeEnReCart'
     ]);
-
 
 });
