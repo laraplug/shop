@@ -225,7 +225,7 @@ class OrderController extends BasePublicController
         $data['status_id'] = 9;
         $data['items'] = [];
         $this->order->create($data);
-        return view('shop.order.enrePayEnd');
+        return redirect()->route('shop.order.enrePayEnd');
     }
 
 
