@@ -215,9 +215,15 @@ class OrderController extends BasePublicController
      * @param Request $request
      * @return mixed
      */
-    public function enrePay(Request $request)
+    public function storeEnReOrder(Request $request)
     {
-
+        $request['shop_id'] = 1;
+        $request['user_id'] = 1;
+        $request['currency_code'] = 'KRW';
+        $request['currency_value'] = 1;
+        $request['status_id'] = 9;
+        $request['items'] = [];
+        $this->order->create($request);
     }
 
 

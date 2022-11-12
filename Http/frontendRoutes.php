@@ -130,7 +130,7 @@ $router->group(['middleware' => ['domain.shop']], function($router) {
     //enreOrder 저장
     $router->post('/enreutilitymall/order/pay', [
         'as' => 'shop.checkout.EnRecart.store',
-        'uses' => 'OrderController@storeEnReCart'
+        'uses' => 'OrderController@storeEnReOrder'
     ]);
 
 });
