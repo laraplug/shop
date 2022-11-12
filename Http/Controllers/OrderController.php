@@ -224,6 +224,7 @@ class OrderController extends BasePublicController
         $request['status_id'] = 9;
         $request['items'] = [];
         $this->order->create($request);
+        return view('shop.order.enrePayEnd');
     }
 
 
