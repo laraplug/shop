@@ -228,5 +228,14 @@ class OrderController extends BasePublicController
         return redirect()->route('shop.order.enrePayEnd');
     }
 
+    /***
+     * enrePay 첫 실행히 보이는 뷰화면
+     * @return mixed
+     */
+    public function enrePayViewEnd(Request $request)
+    {
+        return view('shop.order.enrePayEnd',compact('request'));
+    }
+
 
 }
