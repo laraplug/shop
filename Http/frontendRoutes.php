@@ -132,9 +132,5 @@ $router->group(['middleware' => ['domain.shop']], function($router) {
         'as' => 'shop.order.enrePay.store',
         'uses' => 'OrderController@storeEnReOrder'
     ]);
-    $router->get('/enreutilitymall/order/payend',[
-        'as' => 'shop.order.enrePayEnd.view',
-        'uses' => 'OrderController@enrePayViewEnd'
-    ]);
 
 });
