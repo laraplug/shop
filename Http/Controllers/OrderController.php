@@ -217,15 +217,15 @@ class OrderController extends BasePublicController
      */
     public function storeEnReOrder(Request $request)
     {
-        $data = $request->all();
-        $data['shop_id'] = 1;
-        $data['user_id'] = 1;
-        $data['currency_code'] = 'KRW';
-        $data['currency_value'] = 1;
-        $data['status_id'] = 9;
-        $data['items'] = [];
-        $this->order->create($data);
-        return redirect()->route('shop.order.enrePayEnd');
+//        $data = $request->all();
+//        $data['shop_id'] = 1;
+//        $data['user_id'] = 1;
+//        $data['currency_code'] = 'KRW';
+//        $data['currency_value'] = 1;
+//        $data['status_id'] = 9;
+//        $data['items'] = [];
+//        $this->order->create($data);
+        return view('shop.order.enrePayEnd');
     }
 
 }
