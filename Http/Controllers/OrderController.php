@@ -237,15 +237,10 @@ class OrderController extends BasePublicController
         $data['currency_value'] = 1;
         $data['ip'] = $request -> UserIP;
         $data['total_supply_amout'] = $request->SupplyAmt;
-
-
         $data['shipping_note'] = 'EnReUtilityMall 구매상품입니다.';
-        $data['total_supply_amount'] = $request->GoodsVat;
-
-        $data['shipping_phone'] = '031-476-5988';
         $data['items'] = [];
-//        $this->order->create($data);
-        return view('shop.order.enrePayEnd',compact('request'));
+        $order = $this->order->create($data);
+        return view('shop.order.enrePayEnd',compact('order'));
     }
 
 }
