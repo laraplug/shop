@@ -241,7 +241,7 @@ class OrderController extends BasePublicController
         $data['shipping_note'] = 'EnReUtilityMall 구매상품입니다.';
         $data['items'] = [];
         $order = $this->order->create($data);
-        return view('shop.order.enrePayEnd',compact('payData'));
+        return view('shop.order.enrePayEnd',compact('payData','order'));
     }
 
 }
