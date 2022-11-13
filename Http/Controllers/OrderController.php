@@ -219,6 +219,7 @@ class OrderController extends BasePublicController
     {
         $payData = $request->all();
         $data = $request->all();
+        $testData = $payData['BuyerEmail'];
 //        $data['shop_id'] = 1;
 //        $data['user_id'] = 1;
 //        $data['payment_name'] = 'EnReUtilityMall';
@@ -241,7 +242,7 @@ class OrderController extends BasePublicController
 //        $data['shipping_note'] = 'EnReUtilityMall 구매상품입니다.';
 //        $data['items'] = [];
 //        $order = $this->order->create($data);
-        return view('shop.order.enrePayEnd',compact('payData'));
+        return view('shop.order.enrePayEnd',compact('payData','testData'));
     }
 
 }
