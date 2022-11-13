@@ -228,9 +228,9 @@ class OrderController extends BasePublicController
         $data['shipping_address'] = '경기도 의왕시 내손동 갈미2로 6';
         $data['shipping_email'] = $payData['BuyerEmail'];
         $data['shipping_phone'] = '031-476-5988';
-        $data['total_price'] = $payData['totalPrice'];
+        $data['total_price'] = $payData['Amt'];
         $data['total_tax_amount'] = $payData['ServiceAmt'];
-        $data['total'] = $payData['totalPrice'];
+        $data['total'] = $payData['Amt'];
         $data['payment_gateway_id'] = 'nicepay';
         $data['payment_method_id'] = $payData['PayMethod'];
         $data['status_id'] = 9;
