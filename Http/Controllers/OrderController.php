@@ -232,7 +232,7 @@ class OrderController extends BasePublicController
         $data['total_tax_amount'] = $payData['ServiceAmt'];
         $data['total'] = $payData['Amt'];
         $data['payment_gateway_id'] = 'nicepay';
-        $data['payment_method_id'] = $payData['PayMethod'];
+        $data['payment_method_id'] = 'card';
         $data['status_id'] = 9;
         $data['currency_code'] = 'KRW';
         $data['currency_value'] = 1;
