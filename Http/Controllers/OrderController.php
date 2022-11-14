@@ -252,12 +252,7 @@ class OrderController extends BasePublicController
      */
     public function checkEnReOrder(Request $request, $cartToken = null){
         $enReOrderByCartToken = Order::query()->where('shipping_custom_field', $cartToken)->get();
-        $test = '1234';
-        if($enReOrderByCartToken){
-            return view('shop.order.enrePayEnd',compact('enReOrderByCartToken'));
-        }else{
-            return view('shop.order.enrePayEnd');
-        }
+        return count($enReOrderByCartToken);
 
     }
 
