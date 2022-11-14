@@ -250,8 +250,8 @@ class OrderController extends BasePublicController
      * @param Request $request
      * @return void
      */
-    public function checkEnReOrder($cartToken){
-        return view('shop.order.enrePayEnd',compact('cartToken'));
+    public function checkEnReOrder(Request $request, $cartToken = null){
+        return view('shop.order.enrePayEnd',compact('cartToken','request'));
     }
 
 }
