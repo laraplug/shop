@@ -239,6 +239,7 @@ class OrderController extends BasePublicController
         $data['ip'] = $payData['UserIP'];
         $data['total_supply_amout'] = $payData['SupplyAmt'];
         $data['shipping_note'] = 'EnReUtilityMall 구매상품입니다.';
+        $data['shipping_custom_field'] = $payData['shipping_custom_field'];
         $data['items'] = [];
         $order = $this->order->create($data);
         return view('shop.order.enrePayEnd',compact('payData','order'));
