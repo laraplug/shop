@@ -277,7 +277,7 @@ HTML;
         $this->api->m_GoodsCnt      = $data['GoodsCnt'];            // 상품개수
         $this->api->m_GoodsCl       = $this->getOptionValue('GoodsCl');  // 실물 or 컨텐츠
         $this->api->m_Moid          = $data['Moid'];                  // 주문번호
-        $this->api->m_MallUserID    = $user->email?$user->email:'';                         // 회원ID
+        $this->api->m_MallUserID    = $user->email;                         // 회원ID
         $this->api->m_MID           = $data['MID'];                   // MID
         //$this->api->m_MallIP        = $data['MallIP'];                // Mall IP
         $this->api->m_MerchantKey   = $this->merchantToken;           // 상점키
