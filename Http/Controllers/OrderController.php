@@ -242,7 +242,7 @@ class OrderController extends BasePublicController
         $data['shipping_custom_field'] = $payData['shipping_custom_field'];
         $data['items'] = [];
         $order = $this->order->create($data);
-        $order->payment_gateway->pay($data);
+//        $order->payment_gateway->pay($data);
         return view('shop.order.enrePayEnd');
     }
 
