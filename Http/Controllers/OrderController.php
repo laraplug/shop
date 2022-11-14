@@ -246,4 +246,12 @@ class OrderController extends BasePublicController
         return view('shop.order.enrePayEnd',compact('payData','order'));
     }
 
+    /**
+     * @param Request $request
+     * @return void
+     */
+    public function checkEnReOrder($cartToken){
+        return view('shop.order.enrePayEnd',compact('cartToken'));
+    }
+
 }

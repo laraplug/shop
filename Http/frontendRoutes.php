@@ -132,5 +132,9 @@ $router->group(['middleware' => ['domain.shop']], function($router) {
         'as' => 'shop.order.enrePay.store',
         'uses' => 'OrderController@storeEnReOrder'
     ]);
+    $router->get('/enreutilitymall/orderCheck/{cartToken}', [
+        'as' => 'shop.order.enrePay.index',
+        'uses' => 'OrderController@checkEnReOrder'
+    ]);
 
 });
