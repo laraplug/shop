@@ -341,7 +341,7 @@ abstract class PaymentGateway implements Arrayable, Jsonable, JsonSerializable
         $this->order->status_id = OrderStatus::PENDING;
         $this->order->save();
 
-        $userId = Auth::user()->id;
+        $userId = Auth::user()->id?Auth::user()->id:1;
 
         return $this->order->placeTransaction(
             $userId,
