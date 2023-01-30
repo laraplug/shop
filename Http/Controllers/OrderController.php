@@ -238,8 +238,8 @@ class OrderController extends BasePublicController
         $data['items'] = [];
         $order = $this->order->create($data);
         $payButtonOnClick = $order->payment_gateway->getPayButtonOnClick();
-
-        return view('shop.order.enrePay',compact('request','payButtonOnClick'));
+        $gatewayView = $order->payment_gateway->preparePayment(route('shop.order.pay.store', $order->id));
+        return view('shop.order.enrePay',compact('request','payButtonOnClick','gatewayView'));
     }
     /***
      * enrePay order 생성
