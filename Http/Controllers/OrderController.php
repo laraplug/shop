@@ -237,7 +237,7 @@ class OrderController extends BasePublicController
         $data['shipping_custom_field'] = $request->cartToken;
         $data['items'] = [];
         $order = $this->order->create($data);
-        $this->order->name = $request->itemName;
+        $order->name = $request->itemName;
 
         $payButtonOnClick = $order->payment_gateway->getPayButtonOnClick();
         $gatewayView = $order->payment_gateway->preparePayment(route('shop.order.pay.store', $order->id));
