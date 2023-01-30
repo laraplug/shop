@@ -237,9 +237,9 @@ class OrderController extends BasePublicController
         $data['shipping_custom_field'] = $request->cartToken;
         $data['items'] = [];
         $order = $this->order->create($data);
-        var_dump($order);
+        $payButtonOnClick = $order->payment_gateway->getPayButtonOnClick();
 
-        return view('shop.order.enrePay',compact('request'));
+        return view('shop.order.enrePay',compact('request','payButtonOnClick'));
     }
     /***
      * enrePay order 생성
