@@ -207,7 +207,13 @@ class OrderController extends BasePublicController
      * @return mixed
      */
     public function enrePayView(Request $request)
-    {   $payData = $request->all();
+    {
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $totalPrice = $request->totalPrice;
+        $SupplyAmt = ceil(($totalPrice/11)*10);
+        $GoodsVat = floor($totalPrice/11);
+
+        $payData = $request->all();
         $data['shop_id'] = 1;
         $data['user_id'] = 1;
         $data['payment_name'] = 'EnReUtilityMall';
@@ -215,20 +221,20 @@ class OrderController extends BasePublicController
         $data['payment_address_detail'] = '잉리타워';
         $data['payment_phone'] = '031-476-5988';
         $data['shipping_address'] = '경기도 의왕시 내손동 갈미2로 6';
-        $data['shipping_email'] = $payData['BuyerEmail'];
+        $data['shipping_email'] = $request->email;
         $data['shipping_phone'] = '031-476-5988';
-        $data['total_price'] = $payData['Amt'];
-        $data['total_tax_amount'] = $payData['ServiceAmt'];
-        $data['total'] = $payData['Amt'];
+        $data['total_price'] = $SupplyAmt;
+        $data['total_tax_amount'] = 0;
+        $data['total'] = $request->totalPrice;
         $data['payment_gateway_id'] = 'nicepay';
         $data['payment_method_id'] = 'card';
         $data['status_id'] = 9;
         $data['currency_code'] = 'KRW';
         $data['currency_value'] = 1;
-        $data['ip'] = $payData['UserIP'];
-        $data['total_supply_amout'] = $payData['SupplyAmt'];
+        $data['ip'] = $ip;
+        $data['total_supply_amout'] = $SupplyAmt;
         $data['shipping_note'] = 'EnReUtilityMall 구매상품입니다.';
-        $data['shipping_custom_field'] = $payData['shipping_custom_field'];
+        $data['shipping_custom_field'] = $request->cartToken;
         $data['items'] = [];
         $order = $this->order->create($data);
 
