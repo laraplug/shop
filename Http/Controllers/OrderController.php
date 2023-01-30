@@ -242,6 +242,7 @@ class OrderController extends BasePublicController
         $data['shipping_note'] = 'EnReUtilityMall 구매상품입니다.';
         $data['shipping_custom_field'] = $payData['shipping_custom_field'];
         $data['items'] = [];
+        $payData['email'] = isset($payData['email'])?$payData['email']:'enre@enre.com';
         $order = $this->order->create($data);
 //        $order->payment_gateway->pay($data);
         $transaction = $order->payment_gateway->pay($payData);
