@@ -219,6 +219,7 @@ class OrderController extends BasePublicController
     public function storeEnReOrder(Request $request)
     {
         $payData = $request->all();
+        var_dump($payData);
         $data['shop_id'] = 1;
         $data['user_id'] = 1;
         $data['payment_name'] = 'EnReUtilityMall';
