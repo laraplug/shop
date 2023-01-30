@@ -219,7 +219,7 @@ class OrderController extends BasePublicController
     public function storeEnReOrder(Request $request)
     {
         $payData = $request->all();
-        var_dump($payData);
+
         $data['shop_id'] = 1;
         $data['user_id'] = 1;
         $data['payment_name'] = 'EnReUtilityMall';
@@ -237,7 +237,7 @@ class OrderController extends BasePublicController
         $data['status_id'] = 9;
         $data['currency_code'] = 'KRW';
         $data['currency_value'] = 1;
-        $data['ip'] = $payData['UserIP'];
+        $data['ip'] = isset($payData['UserIP'])?$payData['UserIP']:'0.0.0.0';
         $data['total_supply_amout'] = $payData['SupplyAmt'];
         $data['shipping_note'] = 'EnReUtilityMall 구매상품입니다.';
         $data['shipping_custom_field'] = $payData['shipping_custom_field'];
