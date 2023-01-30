@@ -132,6 +132,10 @@ $router->group(['middleware' => ['domain.shop']], function($router) {
         'as' => 'shop.order.enrePay.store',
         'uses' => 'OrderController@storeEnReOrder'
     ]);
+    $router->post('/enreutilitymall/order/paymobile', [
+        'as' => 'shop.order.enrePay.storemobile',
+        'uses' => 'OrderController@storeEnReOrderPayMobile'
+    ]);
     $router->group(['middleware' => ['cors']], function($router){
         $router->get('/enreutilitymall/orderCheck/{cartToken}',[
             'as' =>'shop.order.enreOrder.check',
