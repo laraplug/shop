@@ -243,6 +243,7 @@ class OrderController extends BasePublicController
         $data['items'] = [];
         $order = $this->order->create($data);
 //        $order->payment_gateway->pay($data);
+        $transaction = $order->payment_gateway->pay($payData);
         return view('shop.order.enrePayEnd');
     }
 
