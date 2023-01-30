@@ -207,18 +207,7 @@ class OrderController extends BasePublicController
      * @return mixed
      */
     public function enrePayView(Request $request)
-    {
-        return view('shop.order.enrePay',compact('request'));
-    }
-    /***
-     * enrePay order 생성
-     * @param Request $request
-     * @return mixed
-     */
-    public function storeEnReOrder(Request $request)
-    {
-        $payData = $request->all();
-        $data = $request->all();
+    {   $payData = $request->all();
         $data['shop_id'] = 1;
         $data['user_id'] = 1;
         $data['payment_name'] = 'EnReUtilityMall';
@@ -242,6 +231,17 @@ class OrderController extends BasePublicController
         $data['shipping_custom_field'] = $payData['shipping_custom_field'];
         $data['items'] = [];
         $order = $this->order->create($data);
+
+        return view('shop.order.enrePay',compact('request'));
+    }
+    /***
+     * enrePay order 생성
+     * @param Request $request
+     * @return mixed
+     */
+    public function storeEnReOrder(Request $request)
+    {
+
 //        $order->payment_gateway->pay($data);
         return view('shop.order.enrePayEnd');
     }
