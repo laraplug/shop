@@ -226,7 +226,7 @@ class OrderController extends BasePublicController
         $data['payment_address_detail'] = '잉리타워';
         $data['payment_phone'] = '031-476-5988';
         $data['shipping_address'] = '경기도 의왕시 내손동 갈미2로 6';
-        $data['shipping_email'] = z;
+        $data['shipping_email'] = $payData['BuyerEmail'];
         $data['shipping_phone'] = '031-476-5988';
         $data['total_price'] = $payData['Amt'];
         $data['total_tax_amount'] = $payData['ServiceAmt'];
