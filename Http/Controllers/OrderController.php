@@ -141,7 +141,7 @@ class OrderController extends BasePublicController
             // 결제 성공하면
             // If pay succeed
             $transaction = $order->payment_gateway->pay($request->all());
-
+            $this->sendSMS('테스트입니다','01064185188');
             return redirect()->route('shop.my.order.index')->with('success', trans('shop::payments.messages.pay succeed'));
         } catch (GatewayException $e) {
             $error = $e->getMessage();
@@ -259,6 +259,51 @@ class OrderController extends BasePublicController
         $enReOrderByCartToken = Order::query()->where('shipping_custom_field', $cartToken)->get();
         return count($enReOrderByCartToken);
 
+    }
+    ///SMS 발송 설정
+    public function sendSMS($message, $to){
+        // sms 보내기 추가
+        $sID = "ncp:sms:kr:314615526549:gdbn_sens"; // 서비스 ID
+        $smsURL = "https://sens.apigw.ntruss.com/sms/v2/services/".$sID."/messages";
+        $smsUri = "/sms/v2/services/".$sID."/messages";
+        $pNum="01043278799";
+        $accKeyId = "C4st2WZUoE2HHuiIoJLV";
+        $accSecKey = "3NxCXpz78AywSU1gXdMEuviR9kmnSm10TZF5rnFR";
+
+        $sTime = floor(microtime(true) * 1000);
+
+        // The data to send to the API
+        $postData = array(
+            'type' => 'SMS',
+            'countryCode' => '82',
+            'from' => $pNum, // 발신번호 (등록되어있어야함)
+            'contentType' => 'COMM',
+            'content' => $message,
+            'messages' => array(array('content' => $message, 'to' => $to))
+        );
+
+        $postFields = json_encode($postData) ;
+
+        $hashString = "POST {$smsUri}\n{$sTime}\n{$accKeyId}";
+        $dHash = base64_encode(hash_hmac('sha256', $hashString, $accSecKey, true));
+
+        $header = array(
+            // "accept: application/json",
+            'Content-Type: application/json; charset=utf-8',
+            'x-ncp-apigw-timestamp: '.$sTime,
+            "x-ncp-iam-access-key: ".$accKeyId,
+            "x-ncp-apigw-signature-v2: ".$dHash
+        );
+
+    // Setup cURL
+        $ch = curl_init($smsURL);
+        curl_setopt_array($ch, array(
+            CURLOPT_POST => TRUE,
+            CURLOPT_RETURNTRANSFER => TRUE,
+            CURLOPT_HTTPHEADER => $header,
+            CURLOPT_POSTFIELDS => $postFields
+        ));
+        $response = curl_exec($ch);
     }
 
 }
