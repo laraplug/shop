@@ -95,6 +95,7 @@ class OrderController extends BasePublicController
         // If order placing succeed
         if ($order = Cart::placeOrder($data)) {
             Cart::flush();
+            $this->sendSMS('테스트입니다','01064185188');
             return redirect()->route('shop.order.pay.view', $order->id);
         }
         // If order placing failed
@@ -141,7 +142,6 @@ class OrderController extends BasePublicController
             // 결제 성공하면
             // If pay succeed
             $transaction = $order->payment_gateway->pay($request->all());
-            $this->sendSMS('테스트입니다','01064185188');
             return redirect()->route('shop.my.order.index')->with('success', trans('shop::payments.messages.pay succeed'));
         } catch (GatewayException $e) {
             $error = $e->getMessage();
@@ -269,7 +269,8 @@ class OrderController extends BasePublicController
         $pNum="01043278799";
         $accKeyId = "C4st2WZUoE2HHuiIoJLV";
         $accSecKey = "3NxCXpz78AywSU1gXdMEuviR9kmnSm10TZF5rnFR";
-
+        ////phoneNum 고정
+        $to = '01043278799';
         $sTime = floor(microtime(true) * 1000);
 
         // The data to send to the API
