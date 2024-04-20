@@ -97,13 +97,14 @@ class OrderController extends BasePublicController
             Cart::flush();
             $message = "주문이 추가되었습니다 \n";
             $message +="주문번호: $order->id\n";
-            $message += "주문일시: $order->created_at\n\n";
-            $message += "결제 정보\n";
-            $message +="결제자명: $order->payment_name\n";
-            $message +="결제금액: $order->total_price\n";
-            $message +="결제방법: $paymentMethodId";
+//            $message += "주문일시: $order->created_at\n\n";
+//            $message += "결제 정보\n";
+//            $message +="결제자명: $order->payment_name\n";
+//            $message +="결제금액: $order->total_price\n";
+//            $message +="결제방법: $paymentMethodId";
             var_dump($message);
                 $this->sendSMS("$message",'01064185188');
+            Cart::flush();
             return redirect()->route('shop.order.pay.view', $order->id);
         }
         // If order placing failed
