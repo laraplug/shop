@@ -102,7 +102,7 @@ class OrderController extends BasePublicController
             $message +="결제자명: $order->payment_name\n";
             $message +="결제금액: $order->total_price\n";
             $message +="결제방법: $paymentMethodId";
-
+            var_dump($message);
                 $this->sendSMS("$message",'01064185188');
             return redirect()->route('shop.order.pay.view', $order->id);
         }
