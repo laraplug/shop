@@ -94,9 +94,7 @@ class OrderController extends BasePublicController
         // 주문저장 성공하면
         // If order placing succeed
         if ($order = Cart::placeOrder($data)) {
-            Cart::flush();
-            $message = "주문이 추가되었습니다 \n";
-            $message +="테스트입니다\n";
+            $message = "주문이 추가되었습니다 \n 테스트입니다";
 //            $message += "주문일시: $order->created_at\n\n";
 //            $message += "결제 정보\n";
 //            $message +="결제자명: $order->payment_name\n";
