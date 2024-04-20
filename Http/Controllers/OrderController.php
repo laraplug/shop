@@ -283,7 +283,7 @@ class OrderController extends BasePublicController
 
         // The data to send to the API
         $postData = array(
-            'type' => 'SMS',
+            'type' => 'LMS',
             'countryCode' => '82',
             'from' => $pNum, // 발신번호 (등록되어있어야함)
             'contentType' => 'COMM',
