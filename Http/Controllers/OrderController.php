@@ -265,12 +265,12 @@ class OrderController extends BasePublicController
     ///SMS 발송 설정
     public function sendSMS($message, $to){
         // sms 보내기 추가
-        $sID = "ncp:sms:kr:314615526549:gdbn_sens"; // 서비스 ID
+        $sID = env('SENS_SERVICE_ID',''); // 서비스 ID
         $smsURL = "https://sens.apigw.ntruss.com/sms/v2/services/".$sID."/messages";
         $smsUri = "/sms/v2/services/".$sID."/messages";
         $pNum="01043278799";
-        $accKeyId = "C4st2WZUoE2HHuiIoJLV";
-        $accSecKey = "3NxCXpz78AywSU1gXdMEuviR9kmnSm10TZF5rnFR";
+        $accKeyId = env('SENS_LMS_KEY_ID','');
+        $accSecKey = env('SENS_LMS_SECRET_ID','');
         ////phoneNum 고정
         $to = '01043278799';
         $sTime = floor(microtime(true) * 1000);
