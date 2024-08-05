@@ -111,6 +111,9 @@ class MyController extends BasePublicController
             if($items->count() > 0) {
                 $items->map(function($item2) use ($items, $item, $product_name) {
 
+                    echo '<script>';
+                    echo 'console.log("'.$item->product_id.'")';
+                    echo '</script>';
                 // 학사관리 항목이라면 카운트 추가
                 if($item->product_id == 1) {
                   $item2['글로벌학사관리교육활동과정']->quantity = $item2['글로벌학사관리교육활동과정']->quantity + 1;
