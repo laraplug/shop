@@ -111,6 +111,7 @@ class MyController extends BasePublicController
             $product_name = $item->product->name;
             if($items->count() > 0) {
                 $items->map(function($item2) use ($items, $item, $product_name) {
+                    $lastID=0;
                 // 학사관리 항목이라면 카운트 추가
                 if($item->product_id == 1) {
                   $item2['글로벌학사관리교육활동과정']->quantity = $item2['글로벌학사관리교육활동과정']->quantity + 1;
@@ -119,17 +120,13 @@ class MyController extends BasePublicController
                     if(isset($item2[$product_name])) {
                         $item2[$product_name]->quantity = $item2[$product_name]->quantity + $item->quantity;
                         $item2[$product_name]->total = $item2[$product_name]->total + $item->total;
-
-                                echo '<script>';
-                                echo 'console.log("1번if")';
-                                echo 'console.log("'.$item->id.'")';
-                                echo '</script>';
                     }
                     else {
                         echo '<script>';
                         echo 'console.log("2번if")';
-                        echo 'console.log("'.$item->id.'")';
+                        echo 'console.log("'.$lastID.'")';
                         echo '</script>';
+                        $lastID = $item->id;
                         // 학사북 번들이라면 번들은 카운트하지 않기
                         if($item->product_id == 2) $item->quantity = 0;
                         $items->push([$product_name => $item]);
