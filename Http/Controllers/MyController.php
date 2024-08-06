@@ -122,10 +122,7 @@ class MyController extends BasePublicController
                         $item2[$product_name]->total = $item2[$product_name]->total + $item->total;
                     }
                     else {
-                        echo '<script>';
-                        echo 'console.log("2번if")';
-                        echo 'console.log("'.$item.'")';
-                        echo '</script>';
+
 
                         // 학사북 번들이라면 번들은 카운트하지 않기
                         if($item->product_id == 2) $item->quantity = 0;
