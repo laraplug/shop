@@ -110,7 +110,7 @@ class MyController extends BasePublicController
         $order->items->map(function($item) use ($items, $degreeCount) {
             $product_name = $item->product->name;
                     echo '<script>';
-        echo 'console.log("'.$items->count().'")';
+        echo 'console.log("'.$items.'")';
         echo '</script>';
             if($items->count() > 0) {
                 $items->map(function($item2) use ($items, $item, $product_name) {
