@@ -103,9 +103,9 @@ class MyController extends BasePublicController
 
         $degreeCount = 0;
         // dd($order->items);
-        echo '<script>';
-        echo 'console.log("'.$order->items.'")';
-        echo '</script>';
+//        echo '<script>';
+//        echo 'console.log("'.$order->items.'")';
+//        echo '</script>';
         $items = collect();
         $order->items->map(function($item) use ($items, $degreeCount) {
             $product_name = $item->product->name;
