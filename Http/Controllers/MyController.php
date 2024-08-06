@@ -126,7 +126,7 @@ class MyController extends BasePublicController
 
                         // 학사북 번들이라면 번들은 카운트하지 않기
                         if($item->product_id == 2) $item->quantity = 0;
-                        $items->push([$product_name => $item]);
+                        //$items->push([$product_name => $item]);
                     }
                 }
 
