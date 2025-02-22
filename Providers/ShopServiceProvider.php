@@ -176,7 +176,7 @@ class ShopServiceProvider extends ServiceProvider
             ],
         ]);
 
-        $this->app[ThumbnailManager::class]->registerThumbnail('', [
+        $this->app[ThumbnailManager::class]->registerThumbnail('largeThumb2', [
             'resize' => [
                 'width' => null,
                 'height' => 1000,
