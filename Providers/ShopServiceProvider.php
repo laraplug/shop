@@ -165,20 +165,21 @@ class ShopServiceProvider extends ServiceProvider
 
     private function registerThumbnails()
     {
-        $this->app[ThumbnailManager::class]->registerThumbnail('largeThumb', [
+        $this->app[ThumbnailManager::class]->registerThumbnail('', [
             'resize' => [
                 'width' => null,
-                'height' => 900,
+                'height' => 1800,
                 'callback' => function ($constraint) {
                     $constraint->aspectRatio();
                     $constraint->upsize();
                 },
             ],
         ]);
-        $this->app[ThumbnailManager::class]->registerThumbnail('', [
+
+        $this->app[ThumbnailManager::class]->registerThumbnail('largeThumb', [
             'resize' => [
                 'width' => null,
-                'height' => null,
+                'height' => 900,
                 'callback' => function ($constraint) {
                     $constraint->aspectRatio();
                     $constraint->upsize();
