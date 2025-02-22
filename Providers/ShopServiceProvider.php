@@ -177,8 +177,6 @@ class ShopServiceProvider extends ServiceProvider
         ]);
         $this->app[ThumbnailManager::class]->registerThumbnail('largeThumb2', [
             'resize' => [
-                'width' => null,
-                'height' => "90%",
                 'callback' => function ($constraint) {
                     $constraint->aspectRatio();
                     $constraint->upsize();
