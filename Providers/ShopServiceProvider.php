@@ -165,7 +165,7 @@ class ShopServiceProvider extends ServiceProvider
 
     private function registerThumbnails()
     {
-        $this->app[ThumbnailManager::class]->registerThumbnail('', [
+        $this->app[ThumbnailManager::class]->registerThumbnail('large3', [
             'resize' => [
                 'width' => null,
                 'height' => 1800,
